@@ -206,7 +206,12 @@ while running:
 
                             # Check if wrong wire was cut first
                             if first_wire_cut != correct_wire:
-                                print("BOOM! You cut the wrong wire first! 💥")
+                                pygame.mouse.set_visible(True)
+                                screen.fill(RED)
+                                defused_text = big_font.render("BOOM! You cut the wrong wire first!", True, BLACK)
+                                screen.blit(defused_text, (WIDTH // 2 - 470, HEIGHT // 2 - 50))
+                                pygame.display.flip()
+                                pygame.time.delay(3000)  # Pause for 3 seconds
                                 running = False  # End game (Bomb explodes)
                             correct_wire_bool = True
 
