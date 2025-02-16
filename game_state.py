@@ -5,10 +5,13 @@ class GameState:
     def __init__(self):
         # Generate game parameters
         self.bomb_number_code = str(random.randint(1000, 9999))
+        self.correct_bomb_number_code = self.bomb_number_code
         self.symbols = ["%", "Ω", "Ψ", "∑"]
-        self.correct_symbol_order = random.sample(self.symbols, len(self.symbols))
+        self.choose_symbol_order = random.sample(self.symbols, len(self.symbols))
+        self.correct_symbol_order = self.choose_symbol_order
         self.wire_colors = ["red", "green", "blue"]
-        self.correct_wire = random.choice(self.wire_colors)
+        self.choose_wire = random.choice(self.wire_colors)
+        self.correct_wire = self.choose_wire
 
         # Generate encrypted wire data
         self.shift_count = random.randint(1, 25)
@@ -29,7 +32,7 @@ class GameState:
              "question": f"Enter the correct symbol order: Ω, ∑, Ψ, %, using only these clues \n {self.symbol_clues}",
              "answer": "".join(self.correct_symbol_order)},
             {"type": "code", "question": f"Crack the bomb code:\n {self.math_equations}",
-             "answer": self.bomb_number_code}
+             "answer": self.correct_bomb_number_code}
         ]
 
     def caesar_cipher_custom_shift(self, message, shift):

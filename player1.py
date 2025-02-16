@@ -60,13 +60,13 @@ wires = [
 ]
 
 wire_colors = ["red", "green", "blue"]
-correct_wire = game_state.correct_wire
+correct_wire = game_state.choose_wire
 print(correct_wire)
 
 # Symbol Keypad Module
 symbols = ["%", "Ω", "Ψ", "∑"]
 symbol_positions = [(600, 500), (700, 500), (800, 500), (900, 500)]
-correct_symbol_order = game_state.correct_symbol_order
+correct_symbol_order = game_state.choose_symbol_order
 print(correct_symbol_order)
 pressed_symbols = []
 symbols_completed = False
