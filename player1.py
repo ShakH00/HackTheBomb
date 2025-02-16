@@ -14,9 +14,7 @@ pygame.init()
 game_state = GameState()
 game_state.initialize()
 
-write_puzzle_info(game_state.correct_wire,
-                 game_state.correct_symbol_order,
-                 game_state.bomb_number_code)
+write_puzzle_info(game_state.correct_wire, game_state.correct_symbol_order, game_state.bomb_number_code)
 
 # Set the screen dimensions and create the screen object
 WIDTH = 1366
@@ -62,22 +60,22 @@ explosive = pygame.image.load("graphics/explosive1.png")
 explosive = pygame.transform.scale(explosive, (320, 80))
 
 red_wire = pygame.image.load("graphics/redwire.png")
-red_wire = pygame.transform.scale(red_wire, (200, 30))
+red_wire = pygame.transform.scale(red_wire, (225, 25))
 
 red_wire_cut = pygame.image.load("graphics/redwirecutted.png")
-red_wire_cut = pygame.transform.scale(red_wire_cut, (200, 30))
+red_wire_cut = pygame.transform.scale(red_wire_cut, (225, 25))
 
 blue_wire = pygame.image.load("graphics/bluewire.png")
-blue_wire = pygame.transform.scale(blue_wire, (200,30))
+blue_wire = pygame.transform.scale(blue_wire, (225,25))
 
 blue_wire_cut = pygame.image.load("graphics/bluewirecutted.png")
-blue_wire_cut = pygame.transform.scale(blue_wire_cut, (200, 30))
+blue_wire_cut = pygame.transform.scale(blue_wire_cut, (225, 25))
 
 green_wire = pygame.image.load("graphics/greenwire.png")
-green_wire = pygame.transform.scale(green_wire, (200,30))
+green_wire = pygame.transform.scale(green_wire, (225,25))
 
 green_wire_cut = pygame.image.load("graphics/greenwirecutted.png")
-green_wire_cut = pygame.transform.scale(green_wire_cut, (200,30))
+green_wire_cut = pygame.transform.scale(green_wire_cut, (225,25))
 
 # Load countdown digit images (0-9)
 digit_images = []
@@ -104,9 +102,9 @@ def generate_wonky_wire(start_x, start_y, length, color, wire_id):
 
 # Creating the wonky wires
 wires = [
-    generate_wonky_wire(100, 200, 300, RED, "red"),
-    generate_wonky_wire(100, 250, 300, GREEN, "green"),
-    generate_wonky_wire(100, 300, 300, BLUE, "blue"),
+    generate_wonky_wire(100, 300, 300, RED, "red"),
+    generate_wonky_wire(100, 350, 300, GREEN, "green"),
+    generate_wonky_wire(100, 400, 300, BLUE, "blue"),
 ]
 
 wire_colors = ["red", "green", "blue"]
@@ -238,7 +236,7 @@ while running:
                 screen.blit(green_wire, (wire_x, wire_y))
 
         # Update hitbox for detecting mouse hover and clicks
-        wire_rect = pygame.Rect(wire_x, wire_y, 200, 30)  # Correct size
+        wire_rect = pygame.Rect(wire_x, wire_y, 225, 25)  # Correct size
 
         # Check if mouse is over the wire
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -408,8 +406,8 @@ while running:
     if bomb_defused:
         pygame.mouse.set_visible(True)
         screen.fill(GREEN_BRIGHT)
-        defused_text = big_font.render("BOMB DEFUSED!", True, BLACK)
-        screen.blit(defused_text, (WIDTH // 2 - 200, HEIGHT // 2 - 50))
+        defused_text = big_font.render("CONGRATULATIONS!! BOMB DEFUSED!", True, BLACK)
+        screen.blit(defused_text, (WIDTH // 2 - 500, HEIGHT // 2 - 50))
         pygame.display.flip()
         pygame.time.delay(3000)  # Pause for 3 seconds
         running = False  # End game
