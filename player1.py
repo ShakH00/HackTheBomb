@@ -167,7 +167,12 @@ while running:
     pygame.draw.rect(screen, DARK_GRAY, (990, 300, 200, 60))  # Black box for input
     pygame.draw.rect(screen, WHITE, (990, 300, 200, 60), 3)  # White border
     input_text = font.render(player_input_code, True, WHITE)
-    screen.blit(input_text, (1010, 310))
+
+    # Draw Submit Button
+    submit_button = pygame.Rect(990, 370, 200, 50)
+    pygame.draw.rect(screen, BLUE, submit_button)
+    submit_text = font.render("Submit", True, WHITE)
+    screen.blit(submit_text, (submit_button.x + 45, submit_button.y + 10))
 
     # Event Handling
     for event in pygame.event.get():
