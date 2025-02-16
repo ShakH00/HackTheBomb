@@ -53,7 +53,7 @@ manual_pages = {
     ],
     "symbols": [
         "Symbol Module Instructions:",
-        "1. Four symbols must be pressed in correct order: Ω, ∑, Ψ, %",
+        "1. Four symbols must be pressed in correct order: %, !, ;, &",
         "2. You will receive logical clues about their order",
         "3. Common clues include:",
         "   - Order relationships (X comes before/after Y)",
@@ -226,7 +226,7 @@ def main():
             for i, button in enumerate(module_buttons):
                 if button.handle_event(event):
                     current_module = modules[i]
-                    current_puzzle = game_state.generate_puzzle()
+                    current_puzzle = game_state.generate_puzzle(i)
                     puzzle_answer = ""
 
             # Handle quick messages

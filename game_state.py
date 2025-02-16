@@ -6,7 +6,7 @@ class GameState:
         # Generate game parameters
         self.bomb_number_code = str(random.randint(1000, 9999))
         self.correct_bomb_number_code = self.bomb_number_code
-        self.symbols = ["%", "Ω", "Ψ", "∑"]
+        self.symbols = ["%", "!", ";", "&"]
         self.choose_symbol_order = random.sample(self.symbols, len(self.symbols))
         self.correct_symbol_order = self.choose_symbol_order
         self.wire_colors = ["red", "green", "blue"]
@@ -26,10 +26,10 @@ class GameState:
 
         # Create puzzle list
         self.puzzles = [
-            {"type": "decipher", "question": f"Decrypt: {self.encrypted_wire}, using {self.encrypted_hint}",
+            {"type": "decrypt", "question": f"Decrypt: {self.encrypted_wire}, using A -> {self.encrypted_hint}",
              "answer": self.correct_wire},
             {"type": "symbol",
-             "question": f"Enter the correct symbol order: Ω, ∑, Ψ, %, using only these clues \n {self.symbol_clues}",
+             "question": f"Enter the correct symbol order: %, !, ;, &, using only these clues \n {self.symbol_clues}",
              "answer": "".join(self.correct_symbol_order)},
             {"type": "code", "question": f"Crack the bomb code:\n {self.math_equations}",
              "answer": self.correct_bomb_number_code}
@@ -52,12 +52,12 @@ class GameState:
         clues.append(f"The {self.correct_symbol_order[1]} comes after the {self.correct_symbol_order[0]}.")
         clues.append(f"The {self.correct_symbol_order[2]} is before the {self.correct_symbol_order[3]}.")
 
-        if index_map["Ω"] != 3:
-            clues.append("The Ω is not the last symbol.")
-        if index_map["∑"] > index_map["Ψ"]:
-            clues.append("The ∑ comes after the Ψ.")
-        if index_map["%"] < index_map["Ω"]:
-            clues.append("The % comes before the Ω.")
+        if index_map["!"] != 3:
+            clues.append("The ! is not the last symbol.")
+        if index_map["&"] > index_map[";"]:
+            clues.append("The & comes after the ;.")
+        if index_map["%"] < index_map["!"]:
+            clues.append("The % comes before the !.")
 
         return clues
 
@@ -86,5 +86,6 @@ class GameState:
 
         return equations
 
-    def generate_puzzle(self):
-        return random.choice(self.puzzles)
+    def generate_puzzle(self, i):
+
+        return self.puzzles[i]
