@@ -36,18 +36,20 @@ big_font = pygame.font.Font(None, 80)
 
 # Load images
 scissor_cursor = pygame.image.load("graphics/scissor_cursor.png")
-scissor_cursor = pygame.transform.scale(scissor_cursor, (32, 32))
+scissor_cursor = pygame.transform.scale(scissor_cursor, (40, 40))
 
 detonator_img = pygame.image.load("graphics/detonate_button.png")
-detonator_img = pygame.transform.scale(detonator_img, (150, 150))
 detonator_img = pygame.transform.scale(detonator_img, (250, 250))
+
+timer_background = pygame.image.load("graphics/timer_background.png")
+timer_background = pygame.transform.scale(timer_background, (300, 165))
 
 # Load countdown digit images (0-9)
 digit_images = []
 for i in range(10):
     image_path = os.path.join("graphics/numbers", f"0{i}.png")
     image = pygame.image.load(image_path)
-    image = pygame.transform.scale(image, (43, 60))  # Adjust image size here
+    image = pygame.transform.scale(image, (50, 68))  # Adjust image size here
     digit_images.append(image)
 
 # Timer
@@ -129,9 +131,9 @@ while running:
     bomb_outer = pygame.draw.rect(screen, (153, 143, 96), (50, 50, 1266, 668))
     bomb_inner = pygame.draw.rect(screen, (115, 107, 72), (60, 60, 1246, 648))
 
-    # Draw box for clock
-    clock_outer = pygame.draw.rect(screen, RED, ((WIDTH / 2) - 100, 300, 197, 80))
-    clock_inner = pygame.draw.rect(screen, BLACK, ((WIDTH / 2) - 95, 305, 187, 70))
+    # Timer background
+    timer_rect = timer_background.get_rect(center=(WIDTH - 683, 160))
+    screen.blit(timer_background, timer_rect.topleft)
 
     # Calculate remaining time
     elapsed_time = time.time() - start_time
@@ -145,11 +147,15 @@ while running:
     sec_tens = seconds // 10
     sec_ones = seconds % 10
 
+    # Back color rect
+    timer_back_rect = pygame.draw.rect(screen, (16, 79, 51), (550, 100, 280, 85))
+
     # Draw countdown timer using images
-    screen.blit(digit_images[min_tens], ((WIDTH / 2) - 90, 310))
-    screen.blit(digit_images[min_ones], ((WIDTH / 2) - 50, 310))
-    screen.blit(digit_images[sec_tens], ((WIDTH / 2), 310))
-    screen.blit(digit_images[sec_ones], ((WIDTH / 2) + 43, 310))
+    screen.blit(digit_images[min_tens], ((WIDTH / 2) - 100, 106))
+    screen.blit(digit_images[min_ones], ((WIDTH / 2) - 50, 106))
+    screen.blit(digit_images[sec_tens], ((WIDTH / 2) + 5, 106))
+    screen.blit(digit_images[sec_ones], ((WIDTH / 2) + 55, 106))
+
 
     if remaining_time <= 0:
         pygame.mouse.set_visible(True)
@@ -227,13 +233,6 @@ while running:
     if code_correct:
         pygame.draw.rect(screen, GREEN, (600, 520, 200, 50))
         screen.blit(submit_text, (submit_button.x + 45, submit_button.y + 10))
-
-    # if time_reduced:
-    #     clock_outer = pygame.draw.rect(screen, BLACK, ((WIDTH / 2) - 100, 300, 197, 80))
-    #     clock_inner = pygame.draw.rect(screen, RED, ((WIDTH / 2) - 95, 305, 187, 70))
-    #     time.sleep(1)
-    #     clock_outer = pygame.draw.rect(screen, RED, ((WIDTH / 2) - 100, 300, 197, 80))
-    #     clock_inner = pygame.draw.rect(screen, BLACK, ((WIDTH / 2) - 95, 305, 187, 70))
 
     # Event Handling
     for event in pygame.event.get():
