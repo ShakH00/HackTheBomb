@@ -40,6 +40,11 @@ GREEN_BRIGHT = (0, 255, 0)
 font = pygame.font.Font(None, 48)
 big_font = pygame.font.Font(None, 80)
 
+# Load background
+background_image = pygame.image.load("graphics/motherboard.jpg")
+# background_image = pygame.transform.scale(background_image, (1266, 668))
+screen.blit(background_image, (0, 0))
+
 # Load images
 scissor_cursor = pygame.image.load("graphics/scissor_cursor.png")
 scissor_cursor = pygame.transform.scale(scissor_cursor, (40, 40))
@@ -49,6 +54,12 @@ detonator_img = pygame.transform.scale(detonator_img, (250, 250))
 
 timer_background = pygame.image.load("graphics/timer_background.png")
 timer_background = pygame.transform.scale(timer_background, (300, 165))
+
+battery = pygame.image.load("graphics/battery.png")
+battery = pygame.transform.scale(battery, (120, 105))
+
+explosive = pygame.image.load("graphics/explosive1.png")
+explosive = pygame.transform.scale(explosive, (320, 80))
 
 # Load countdown digit images (0-9)
 digit_images = []
@@ -91,6 +102,7 @@ pressed_symbols = []
 symbols_completed = False
 
 # Number Code Module
+bomb_number_code = game_state.bomb_number_code
 player_input_code = ""
 code_correct = False
 print(game_state.bomb_number_code)
@@ -131,7 +143,7 @@ bomb_defused = False  # Track if bomb has been successfully defused
 correct_wire_bool = False
 
 while running:
-    screen.fill(WHITE)
+    # screen.fill(WHITE)
 
     # Outer shell of the bomb
     bomb_outer = pygame.draw.rect(screen, (153, 143, 96), (50, 50, 1266, 668))
@@ -172,12 +184,18 @@ while running:
         pygame.time.delay(3000)  # Pause for 3 seconds
         running = False  # End game (Bomb explodes)
 
+    # Dynamite
+    screen.blit(explosive, (830, 80))
+
+    # Battery
+    screen.blit(battery, (413, 100))
+
     # Display instructions from Player 2
     instruction_text = font.render(received_message, True, BLACK)
     screen.blit(instruction_text, (50, 100))
 
     # Detonator button
-    detonator_rect = detonator_img.get_rect(center=(WIDTH - 230, 230))
+    detonator_rect = detonator_img.get_rect(center=(WIDTH - 230, 320))
     screen.blit(detonator_img, detonator_rect.topleft)
 
     # Draw Wonky Wires
