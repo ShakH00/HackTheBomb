@@ -8,10 +8,13 @@ import random
 # Initialize pygame
 pygame.init()
 
-# Window settings
-WIDTH, HEIGHT = 1366, 768
+# Set the screen dimensions and create the screen object
+WIDTH = 1366
+HEIGHT = 768
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Bomb Defusal - Player 1 (Defuser)")
+pygame.display.set_caption("HackTheBomb | Player 1 (Defuser)")
+icon = pygame.image.load("graphics/icon.png")
+pygame.display.set_icon(icon)
 
 # Colors
 WHITE = (255, 255, 255)
@@ -44,9 +47,9 @@ def generate_wonky_wire(start_x, start_y, length, color, wire_id):
 
 # Creating the wonky wires
 wires = [
-    generate_wonky_wire(500, 250, 300, RED, "red"),
-    generate_wonky_wire(500, 300, 300, GREEN, "green"),
-    generate_wonky_wire(500, 350, 300, BLUE, "blue"),
+    generate_wonky_wire(100, 200, 300, RED, "red"),
+    generate_wonky_wire(100, 250, 300, GREEN, "green"),
+    generate_wonky_wire(100, 300, 300, BLUE, "blue"),
 ]
 
 # Symbol Keypad Module
@@ -98,11 +101,21 @@ correct_wire_bool = False
 while running:
     screen.fill(WHITE)
 
+    # Outer shell of the bomb
+    bomb_outer = pygame.draw.rect(screen, (153, 143, 96), (50, 50, 1266, 668))
+    bomb_inner = pygame.draw.rect(screen, (115, 107, 72), (60, 60, 1246, 648))
+
+    # Draw box for clock
+    clock_outer = pygame.draw.rect(screen, (255, 0, 0), ((WIDTH / 2) - 75, 300, 150, 80))
+    clock_inner = pygame.draw.rect(screen, (0, 0, 0), ((WIDTH / 2) - 70, 305, 140, 70))
+
     # Calculate remaining time
     elapsed_time = time.time() - start_time
     remaining_time = max(0, bomb_timer - int(elapsed_time))
-    timer_text = font.render(f"Time Left: {remaining_time}s", True, BLACK)
-    screen.blit(timer_text, (50, 50))
+    minutes = remaining_time // 60
+    seconds = remaining_time % 60
+    timer_text = font.render(f"{minutes}:{seconds:02}", True, RED)
+    screen.blit(timer_text, (((WIDTH / 2) - 30), 325))
 
     # Display instructions from Player 2
     instruction_text = font.render(received_message, True, BLACK)
@@ -112,6 +125,9 @@ while running:
     for wire in wires:
         if not wire["cut"]:
             pygame.draw.lines(screen, wire["color"], False, wire["points"], 6)
+    wires_left_terminal = pygame.draw.rect(screen, (0, 0, 0), (90, 175, 10, 155))
+    wires_right_terminal = pygame.draw.rect(screen, (0, 0, 0), (370, 175, 10, 155))
+
 
     # Draw Symbol Keypad
     for idx, symbol in enumerate(symbols):
@@ -196,7 +212,7 @@ while running:
     if bomb_defused:
         screen.fill(GREEN_BRIGHT)
         defused_text = big_font.render("BOMB DEFUSED!", True, BLACK)
-        screen.blit(defused_text, (WIDTH//2 - 200, HEIGHT//2 - 50))
+        screen.blit(defused_text, (WIDTH // 2 - 200, HEIGHT // 2 - 50))
         pygame.display.flip()
         pygame.time.delay(3000)  # Pause for 3 seconds
         running = False  # End game
