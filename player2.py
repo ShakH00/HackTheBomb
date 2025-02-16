@@ -249,6 +249,8 @@ def main():
                 if button.handle_event(event):
                     send_message(button.text)
                     answer_feedback = "Sending to defuser..."
+                    feedback_timer = time.time() + 2
+                    puzzle_answer = ""
 
             if submit_button.handle_event(event):
                 send_message(input_text)
