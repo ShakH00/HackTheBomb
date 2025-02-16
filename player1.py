@@ -59,6 +59,10 @@ wires = [
     generate_wonky_wire(100, 300, 300, BLUE, "blue"),
 ]
 
+wire_colors = ["red", "green", "blue"]
+correct_wire = game_state.wire_colors
+print(correct_wire)
+
 # Symbol Keypad Module
 symbols = ["%", "Ω", "Ψ", "∑"]
 symbol_positions = [(600, 500), (700, 500), (800, 500), (900, 500)]
@@ -71,8 +75,7 @@ symbols_completed = False
 bomb_number_code = game_state.bomb_number_code
 player_input_code = ""
 code_correct = False
-wire_colors = ["red", "green", "blue"]
-correct_wire = game_state.wire_colors
+print(bomb_number_code)
 
 # Network Setup to Receive Instructions from Player 2
 HOST = "localhost"
