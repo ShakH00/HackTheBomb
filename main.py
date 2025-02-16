@@ -25,8 +25,14 @@ defuser = pygame.transform.scale(defuser, (300, 300))
 main_text = pygame.image.load("graphics/main_txt.png")
 
 # Button rectangles for collision detection
-expert_rect = expert.get_rect(topleft=(200, 320))
-defuser_rect = defuser.get_rect(topleft=(1166 - 303, 320))
+expert_rect = expert.get_rect(center=(200 + 150, 320 + 150))
+defuser_rect = defuser.get_rect(center=(1166 - 303 + 150, 320 + 150))
+
+# Scaling factors and target sizes
+expert_size = [300, 300]
+defuser_size = [300, 300]
+target_size = [315, 315]
+scaling_factor = 0.1  # Controls the smoothness of the scaling
 
 """Display the main screen"""
 def main_screen():
@@ -39,12 +45,34 @@ def main_screen():
     while running:
         screen.blit(background_image, (0, 0))
 
-        # Logos on page
-        screen.blit(expert, expert_rect.topleft)
-        screen.blit(defuser, defuser_rect.topleft)
+        # Get mouse position
+        mouse_pos = pygame.mouse.get_pos()
+
+        # Check for hover and interpolate scaling smoothly
+        if expert_rect.collidepoint(mouse_pos):
+            expert_size[0] += (target_size[0] - expert_size[0]) * scaling_factor
+            expert_size[1] += (target_size[1] - expert_size[1]) * scaling_factor
+        else:
+            expert_size[0] += (300 - expert_size[0]) * scaling_factor
+            expert_size[1] += (300 - expert_size[1]) * scaling_factor
+
+        if defuser_rect.collidepoint(mouse_pos):
+            defuser_size[0] += (target_size[0] - defuser_size[0]) * scaling_factor
+            defuser_size[1] += (target_size[1] - defuser_size[1]) * scaling_factor
+        else:
+            defuser_size[0] += (300 - defuser_size[0]) * scaling_factor
+            defuser_size[1] += (300 - defuser_size[1]) * scaling_factor
+
+        # Draw expert button with scaling
+        scaled_expert = pygame.transform.smoothscale(expert, (int(expert_size[0]), int(expert_size[1])))
+        screen.blit(scaled_expert, (expert_rect.centerx - scaled_expert.get_width() // 2, expert_rect.centery - scaled_expert.get_height() // 2))
+
+        # Draw defuser button with scaling
+        scaled_defuser = pygame.transform.smoothscale(defuser, (int(defuser_size[0]), int(defuser_size[1])))
+        screen.blit(scaled_defuser, (defuser_rect.centerx - scaled_defuser.get_width() // 2, defuser_rect.centery - scaled_defuser.get_height() // 2))
 
         # Change mouse cursor on hover
-        if defuser_rect.collidepoint(pygame.mouse.get_pos()) or expert_rect.collidepoint(pygame.mouse.get_pos()):
+        if defuser_rect.collidepoint(mouse_pos) or expert_rect.collidepoint(mouse_pos):
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         else:
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
