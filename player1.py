@@ -65,7 +65,7 @@ pressed_symbols = []
 symbols_completed = False
 
 # Number Code Module
-bomb_number_code = str(random.randint(1000, 9999)) #randomly selected code
+bomb_number_code = str(random.randint(1000, 9999)) # randomly selected code
 print(bomb_number_code)
 player_input_code = ""
 code_correct = False
@@ -95,6 +95,9 @@ def receive_data():
 
 # Start networking thread
 threading.Thread(target=receive_data, daemon=True).start()
+
+# Input box state
+input_active = False
 
 # Game Loop
 running = True
@@ -164,9 +167,10 @@ while running:
     screen.blit(bomb_code_text, (1000, 250))
 
     # Draw input box for number entry
-    pygame.draw.rect(screen, DARK_GRAY, (990, 300, 200, 60))  # Black box for input
-    pygame.draw.rect(screen, WHITE, (990, 300, 200, 60), 3)  # White border
+    input_box = pygame.draw.rect(screen, GRAY if input_active else DARK_GRAY, (990, 300, 200, 60))
+    pygame.draw.rect(screen, WHITE, (990, 300, 200, 60), 3)
     input_text = font.render(player_input_code, True, WHITE)
+    screen.blit(input_text, (1000, 310))
 
     # Draw Submit Button
     submit_button = pygame.Rect(990, 370, 200, 50)
@@ -218,20 +222,26 @@ while running:
                             print("Incorrect Keypad Entry! Resetting...")
                             pressed_symbols = []
 
-        elif event.type == pygame.KEYDOWN:
-            # Number Code Entry
-            if event.key == pygame.K_RETURN:
-                if player_input_code == bomb_number_code:
-                    print("Correct Code Entered!")
-                    code_correct = True
-                else:
-                    print("Wrong Code! Try Again.")
-                player_input_code = ""  # Reset input
-            elif event.key == pygame.K_BACKSPACE:
+            # Keypad entering
+            if input_box.collidepoint(event.pos):
+                input_active = True
+            else:
+                input_active = False
+
+            if submit_button.collidepoint(event.pos):
+                if len(player_input_code) == 4:
+                    if player_input_code == bomb_number_code:
+                        print("Correct Code Entered!")
+                        code_correct = True
+                    else:
+                        print("Wrong Code! Try Again.")
+                    player_input_code = ""
+
+        elif event.type == pygame.KEYDOWN and input_active:
+            if event.key == pygame.K_BACKSPACE:
                 player_input_code = player_input_code[:-1]
-            elif event.unicode.isdigit():
-                if len(player_input_code) < 4:
-                    player_input_code += event.unicode
+            elif event.unicode.isdigit() and len(player_input_code) < 4:
+                player_input_code += event.unicode
 
     # Check if all tasks are completed
     if correct_wire_bool and symbols_completed and code_correct:
