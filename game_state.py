@@ -1,55 +1,58 @@
 import random
+from utility import write_puzzle_info, read_puzzle_info
 
 
 class GameState:
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(GameState, cls).__new__(cls)
-            cls._instance._initialized = False
-        return cls._instance
-
     def __init__(self):
-        if self._initialized:
-            return
+        self.bomb_number_code = None
+        self.correct_wire = None
+        self.correct_symbol_order = None
+        self.puzzles = None
+        self.puzzle_info = None
+        self.initialized = False
 
-        self._initialized = True
-        # Generate game parameters with proper initialization order
-        self.bomb_number_code = str(random.randint(1000, 9999))
-        self.symbols = ["%", "!", ";", "&"]
-        self.wire_colors = ["red", "green", "blue"]
+    def initialize(self):
+        if not self.initialized:
+            self.bomb_number_code = str(random.randint(1000, 9999))
+            self.correct_wire = random.choice(["red", "green", "blue"])
+            self.correct_symbol_order = random.sample(["%", "!", ";", "&"], 4)
+            self.generate_puzzles()
+            write_puzzle_info(self.correct_wire, self.correct_symbol_order, self.bomb_number_code)
+            self.initialized = True
 
-        # Initialize correct values
-        self.correct_wire = random.choice(self.wire_colors)
-        self.correct_symbol_order = random.sample(self.symbols, len(self.symbols))
+    def generate_puzzles(self):
+        shift_count = random.randint(1, 25)
+        encrypted_wire = self.caesar_cipher_custom_shift(self.correct_wire, shift_count)
+        encrypted_hint = self.caesar_cipher_custom_shift("A", shift_count)
+        symbol_clues = self.generate_logic_clues()
+        math_equations = self.generate_math_equations_from_code()
 
-        # Store message
-        self.message = ""
-
-        # Generate encrypted wire data based on correct wire
-        self.shift_count = random.randint(1, 25)
-        self.encrypted_wire = self.caesar_cipher_custom_shift(self.correct_wire, self.shift_count)
-        self.encrypted_hint = self.caesar_cipher_custom_shift("A", self.shift_count)
-
-        # Generate symbol clues based on correct order
-        self.symbol_clues = self.generate_logic_clues()
-
-        # Generate math equations based on bomb code
-        self.math_equations = self.generate_math_equations_from_code()
-
-        # Create puzzle list using the established correct values
         self.puzzles = [
             {"type": "decrypt",
-             "question": f"Decrypt: {self.encrypted_wire}, using A -> {self.encrypted_hint}",
+             "question": f"Decrypt: {encrypted_wire}, using A -> {encrypted_hint}",
              "answer": self.correct_wire},
             {"type": "symbol",
-             "question": f"Enter the correct symbol order: %, !, ;, &, using only these clues \n {self.symbol_clues}",
+             "question": f"Enter the correct symbol order: %, !, ;, &, using only these clues \n {symbol_clues}",
              "answer": "".join(self.correct_symbol_order)},
             {"type": "code",
-             "question": f"Crack the bomb code:\n {self.math_equations}",
+             "question": f"Crack the bomb code:\n {math_equations}",
              "answer": self.bomb_number_code}
         ]
+
+    # Getters
+    def get_bomb_code(self):
+        return self.bomb_number_code
+
+    def get_correct_wire(self):
+        return self.correct_wire
+
+    def get_symbol_order(self):
+        return self.correct_symbol_order
+
+    def get_puzzle(self, index):
+        if not self.puzzles:
+            return None
+        return self.puzzles[index]
 
     def caesar_cipher_custom_shift(self, message, shift):
         encrypted_message = ""
@@ -102,8 +105,14 @@ class GameState:
 
         return equations
 
-    def generate_puzzle(self, puzzle_index):
-        """Generate a specific puzzle by index."""
-        if 0 <= puzzle_index < len(self.puzzles):
-            return self.puzzles[puzzle_index]
-        raise IndexError("Puzzle index out of range")
+    def load_puzzle_info(self):
+        """Load puzzle information from file (Player 2)."""
+        self.puzzle_info = read_puzzle_info()
+        if self.puzzle_info:
+            self.correct_wire = self.puzzle_info['WIRE']
+            self.correct_symbol_order = self.puzzle_info['SYMBOLS']
+            self.bomb_number_code = self.puzzle_info['CODE']
+            self.generate_puzzles()
+            self.initialized = True
+            return True
+        return False

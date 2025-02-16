@@ -6,11 +6,17 @@ import socket
 import threading
 import random
 from game_state import GameState
+from utility import write_puzzle_info
 
 # Initialize pygame
 pygame.init()
 
 game_state = GameState()
+game_state.initialize()
+
+write_puzzle_info(game_state.correct_wire,
+                 game_state.correct_symbol_order,
+                 game_state.bomb_number_code)
 
 # Set the screen dimensions and create the screen object
 WIDTH = 1366
