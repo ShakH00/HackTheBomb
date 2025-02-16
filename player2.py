@@ -1,121 +1,264 @@
+import pygame
+import sys
 import socket
+import threading
 import time
 import random
-import player1
+from game_state import GameState
 
+# Initialize pygame
+pygame.init()
+game_state = GameState()
+
+# Window settings
+WIDTH, HEIGHT = 1366, 768
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Bomb Defusal - Player 2 (Expert)")
+
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (120, 120, 120)
+LIGHT_GRAY = (200, 200, 200)
+BLUE = (0, 100, 255)
+RED = (255, 50, 50)
+GREEN = (50, 200, 50)
+
+# Fonts
+font = pygame.font.Font(None, 36)
+title_font = pygame.font.Font(None, 48)
+small_font = pygame.font.Font(None, 24)
+
+# Network Setup
 HOST = "localhost"
 PORT = 5555
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-correct_code = player1.bomb_number_code
-correct_symbols = player1.correct_symbol_order
-correct_wire = player1.correct_wire
-def caesar_cipher_custom_shift(message, shift):
-    """Encrypt a message using a specified Caesar cipher shift."""
-    encrypted_message = ""
+# Module states and information
+current_module = "wires"
+modules = ["wires", "symbols", "code"]
+message_to_send = ""
 
-    for char in message:
-        if char.isalpha():  # Only shift letters
-            shift_base = ord('A') if char.isupper() else ord('a')
-            encrypted_message += chr((ord(char) - shift_base + shift) % 26 + shift_base)
-        else:
-            encrypted_message += char  # Keep spaces and punctuation unchanged
+# Detailed manual pages with puzzle mechanics
+manual_pages = {
+    "wires": [
+        "Wire Module Instructions:",
+        "1. You will receive an encrypted wire color using Caesar cipher",
+        "2. Use the provided encrypted 'A' to determine the shift",
+        "3. Possible wire colors: red, blue, green",
+        "4. The defuser must cut the correct wire first",
+        "5. Example: If you get 'ylk' and 'H', the shift is 7",
+        "   (A -> H means 7 shift, so 'ylk' -> 'red')",
+        "WARNING: Cutting wrong wire will detonate the bomb!"
+    ],
+    "symbols": [
+        "Symbol Module Instructions:",
+        "1. Four symbols must be pressed in correct order: Ω, ∑, Ψ, %",
+        "2. You will receive logical clues about their order",
+        "3. Common clues include:",
+        "   - Order relationships (X comes before/after Y)",
+        "   - Position constraints (X is not last)",
+        "   - Relative positions (X is before Y)",
+        "4. Analyze all clues to determine the exact sequence",
+        "5. Incorrect sequence will reset the module"
+    ],
+    "code": [
+        "Code Module Instructions:",
+        "1. You will receive four math equations",
+        "2. Each equation's solution is one digit of the code",
+        "3. Equations use basic operations (+, -, *, /)",
+        "4. Solve equations in order to get the 4-digit code",
+        "5. Example:",
+        "   3 + 4 = ? (7)",
+        "   12 - 4 = ? (8)",
+        "   3 * 3 = ? (9)",
+        "   10 / 2 = ? (5)",
+        "   Final code: 7895"
+    ]
+}
 
-    return encrypted_message
+# Button class for interactive elements
+class Button:
+    def __init__(self, x, y, width, height, text, color=LIGHT_GRAY):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.text = text
+        self.color = color
+        self.hover = False
 
-shift_count = random.randint(1, 25)
-encrypted_wire = caesar_cipher_custom_shift(correct_wire, shift_count)
-encrypted_hint = caesar_cipher_custom_shift("A", shift_count)
+    def draw(self, surface):
+        color = GRAY if self.hover else self.color
+        pygame.draw.rect(surface, color, self.rect)
+        pygame.draw.rect(surface, BLACK, self.rect, 2)
+        text_surface = font.render(self.text, True, BLACK)
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        surface.blit(text_surface, text_rect)
 
-
-def generate_logic_clues(symbol_order):
-    """Generate logic clues based on the shuffled symbol order."""
-    clues = []
-
-    # Get the indexes of each symbol
-    index_map = {symbol: i for i, symbol in enumerate(symbol_order)}
-
-    # Generate clues based on their positions
-    clues.append(f"The {symbol_order[1]} comes after the {symbol_order[0]}.")  # First clue
-    clues.append(f"The {symbol_order[2]} is before the {symbol_order[3]}.")  # Second clue
-
-    # Additional logic constraints
-    if index_map["Ω"] != 3:  # Ω is not the last symbol
-        clues.append("The Ω is not the last symbol.")
-    if index_map["∑"] > index_map["Ψ"]:  # ∑ comes after Ψ
-        clues.append("The ∑ comes after the Ψ.")
-    if index_map["%"] < index_map["Ω"]:  # ★ comes before Ω
-        clues.append("The % comes before the Ω.")
-
-    return clues
-
-clues = generate_logic_clues(correct_symbols)
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEMOTION:
+            self.hover = self.rect.collidepoint(event.pos)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if self.hover:
+                return True
+        return False
 
 
-def generate_math_equations_from_code(code):
-    """Generate four math equations where each solution matches a digit in the given 4-digit code."""
-    if len(code) != 4 or not code.isdigit():
-        raise ValueError("The input code must be exactly 4 digits long.")
-
-    equations = []
-    for digit in code:
-        target_result = int(digit)
-
-        operation = random.choice(["+", "-", "*", "/"])
-
-        if operation == "+":
-            num1 = random.randint(1, target_result)
-            num2 = target_result - num1  # Ensure the sum equals the digit
-
-        elif operation == "-":
-            num1 = random.randint(target_result, 9)
-            num2 = num1 - target_result  # Ensure result matches the digit
-
-        elif operation == "*":
-            possible_factors = [i for i in range(1, 10) if target_result % i == 0]  # Find valid factors
-            num1 = random.choice(possible_factors)
-            num2 = target_result // num1  # Ensure multiplication result matches digit
-
-        elif operation == "/":
-            num2 = random.randint(1, 5)  # Small divisor
-            num1 = target_result * num2  # Ensure result matches digit
-            equation = f"{num1} {operation} {num2} = ?"
-
-        equation = f"{num1} {operation} {num2} = ?"
-        equations.append(equation)
-
-    return equations  # Return the generated equations
-
-math_equation = generate_math_equations_from_code(correct_code)
-
-puzzles = [
-    {"type": "decipher", "question": f"Decrypt: {encrypted_wire}, using {encrypted_hint}", "answer": correct_wire},
-    {"type": "symbol", "question": f"Enter the correct symbol order: Ω, ∑, Ψ, %, using only these clues \n {clues}", "answer": correct_symbols},
-    {"type": "code", "question": f"Crack the bomb code:\n {math_equation}", "answer": correct_code}
+# Create buttons for different modules
+module_buttons = [
+    Button(50, 50, 200, 50, "Wires Module"),
+    Button(50, 120, 200, 50, "Symbols Module"),
+    Button(50, 190, 200, 50, "Code Module")
 ]
 
-def generate_puzzle():
-    return random.choice(puzzles)
+# Quick message buttons with more specific instructions
+quick_messages = [
+    Button(300, 50, 400, 50, "WAIT! Don't cut any wires yet!"),
+    Button(300, 120, 400, 50, "Solve equations one at a time"),
+    Button(300, 190, 400, 50, "Remember symbol order carefully"),
+    Button(300, 260, 400, 50, "Double-check before proceeding")
+]
+
+# Puzzle display area
+puzzle_rect = pygame.Rect(50, 330, 650, 200)
+answer_rect = pygame.Rect(50, 540, 400, 40)
+submit_button = Button(460, 540, 100, 40, "Submit")
+
+# Custom message input
+input_rect = pygame.Rect(50, HEIGHT - 100, 400, 40)
+send_button = Button(460, HEIGHT - 100, 100, 40, "Send")
+input_text = ""
+input_active = False
+
+# Current puzzle tracking
+current_puzzle = None
+puzzle_answer = ""
+answer_feedback = ""
+feedback_timer = 0
+
+
+def send_message(message):
+    try:
+        client_socket.send(message.encode())
+    except:
+        print("Error sending message")
+
+
+def draw_wrapped_text(surface, text, rect, font, color):
+    words = text.split(' ')
+    lines = []
+    current_line = []
+
+    for word in words:
+        current_line.append(word)
+        width = font.size(' '.join(current_line))[0]
+        if width > rect.width:
+            if len(current_line) > 1:
+                current_line.pop()
+                lines.append(' '.join(current_line))
+                current_line = [word]
+            else:
+                lines.append(word)
+                current_line = []
+
+    if current_line:
+        lines.append(' '.join(current_line))
+
+    y = rect.top
+    for line in lines:
+        text_surface = font.render(line, True, color)
+        surface.blit(text_surface, (rect.left, y))
+        y += font.get_linesize()
 
 def main():
-    print("Player 2 (Expert) is connecting to Player 1...")
-    time.sleep(2)
+    global input_text, input_active, current_module, current_puzzle, puzzle_answer, answer_feedback, feedback_timer
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        print("Connected to Player 1!")
+    try:
+        client_socket.connect((HOST, PORT))
+        print("Connected to Player 1")
+    except:
+        print("Could not connect to Player 1")
+        return
 
-        while True:
-            puzzle = generate_puzzle()
-            print("\nPUZZLE:", puzzle["question"])
-            user_answer = input("Enter your answer: ").strip()
+    running = True
+    while running:
+        screen.fill(WHITE)
 
-            if user_answer.lower() == puzzle["answer"].lower():
-                print("Correct Answer! Sending info to Player 1...")
-                s.sendall(f"SOLUTION: {user_answer}".encode())
-            else:
-                print("Incorrect! Try again.")
+        # Draw title
+        title = title_font.render("Bomb Defusal Expert Console", True, BLACK)
+        screen.blit(title, (WIDTH // 2 - 200, 10))
 
-            time.sleep(2)
+        # Draw all buttons
+        for button in module_buttons + quick_messages:
+            button.draw(screen)
+
+        # Draw current module manual
+        manual_rect = pygame.Rect(700, 50, 600, HEIGHT - 100)
+        pygame.draw.rect(screen, LIGHT_GRAY, manual_rect)
+        if current_module in manual_pages:
+            for i, line in enumerate(manual_pages[current_module]):
+                text = small_font.render(line, True, BLACK)
+                screen.blit(text, (710, 60 + i * 25))
+
+        # Draw puzzle area
+        pygame.draw.rect(screen, WHITE, puzzle_rect)
+        pygame.draw.rect(screen, BLACK, puzzle_rect, 2)
+        if current_puzzle:
+            draw_wrapped_text(screen, current_puzzle["question"], puzzle_rect, font, BLACK)
+
+        # Draw answer input
+        pygame.draw.rect(screen, LIGHT_GRAY if input_active else WHITE, answer_rect)
+        pygame.draw.rect(screen, BLACK, answer_rect, 2)
+        text_surface = font.render(puzzle_answer, True, BLACK)
+        screen.blit(text_surface, (answer_rect.x + 5, answer_rect.y + 5))
+        submit_button.draw(screen)
+
+        # Draw feedback if present
+        if answer_feedback and time.time() < feedback_timer:
+            feedback_color = GREEN if "Correct" in answer_feedback else RED
+            feedback_text = font.render(answer_feedback, True, feedback_color)
+            screen.blit(feedback_text, (50, 590))
+
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            # Handle module selection
+            for i, button in enumerate(module_buttons):
+                if button.handle_event(event):
+                    current_module = modules[i]
+                    current_puzzle = game_state.generate_puzzle()
+                    puzzle_answer = ""
+
+            # Handle quick messages
+            for button in quick_messages:
+                if button.handle_event(event):
+                    send_message(button.text)
+
+            # Handle answer input
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                input_active = answer_rect.collidepoint(event.pos)
+
+            if event.type == pygame.KEYDOWN and input_active:
+                if event.key == pygame.K_RETURN:
+                    if current_puzzle and puzzle_answer == current_puzzle["answer"]:
+                        answer_feedback = "Correct! Sending to defuser..."
+                        send_message(f"SOLUTION: {puzzle_answer}")
+                        current_puzzle = game_state.generate_puzzle()
+                    else:
+                        answer_feedback = "Incorrect! Try again."
+                    feedback_timer = time.time() + 2
+                    puzzle_answer = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    puzzle_answer = puzzle_answer[:-1]
+                else:
+                    puzzle_answer += event.unicode
+
+        pygame.display.flip()
+
+    client_socket.close()
+    pygame.quit()
+    sys.exit()
+
 
 if __name__ == "__main__":
     main()
