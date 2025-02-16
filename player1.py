@@ -5,7 +5,9 @@ import time
 import socket
 import threading
 import random
+import textwrap
 from game_state import GameState
+from player2 import small_font
 from utility import write_puzzle_info
 
 # Initialize pygame
@@ -59,6 +61,7 @@ battery = pygame.transform.scale(battery, (120, 105))
 explosive = pygame.image.load("graphics/explosive1.png")
 explosive = pygame.transform.scale(explosive, (320, 80))
 
+# Wires
 red_wire = pygame.image.load("graphics/redwire.png")
 red_wire = pygame.transform.scale(red_wire, (225, 25))
 
@@ -76,6 +79,10 @@ green_wire = pygame.transform.scale(green_wire, (225,25))
 
 green_wire_cut = pygame.image.load("graphics/greenwirecutted.png")
 green_wire_cut = pygame.transform.scale(green_wire_cut, (225,25))
+
+# Phone
+phone = pygame.image.load("graphics/phone2.png")
+phone = pygame.transform.scale(phone, (300, 200))
 
 # Load countdown digit images (0-9)
 digit_images = []
@@ -164,6 +171,9 @@ while running:
     bomb_outer = pygame.draw.rect(screen, (153, 143, 96), (50, 50, 1266, 668))
     bomb_inner = pygame.draw.rect(screen, (115, 107, 72), (60, 60, 1246, 648))
 
+    # Phone
+    screen.blit(phone, (50, 40))
+
     # Timer background
     timer_rect = timer_background.get_rect(center=(WIDTH - 683, 160))
     screen.blit(timer_background, timer_rect.topleft)
@@ -206,8 +216,9 @@ while running:
     screen.blit(battery, (413, 100))
 
     # Display instructions from Player 2
-    instruction_text = font.render(received_message, True, BLACK)
-    screen.blit(instruction_text, (50, 100))
+    small_font = pygame.font.SysFont(None, 20)
+    instruction_text = small_font.render(received_message, True, GREEN)
+    screen.blit(instruction_text, (95, 125))
 
     # Detonator button
     detonator_rect = detonator_img.get_rect(center=(WIDTH - 230, 320))
