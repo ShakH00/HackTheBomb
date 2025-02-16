@@ -2,38 +2,53 @@ import random
 
 
 class GameState:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(GameState, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
+
     def __init__(self):
-        # Generate game parameters
+        if self._initialized:
+            return
+
+        self._initialized = True
+        # Generate game parameters with proper initialization order
         self.bomb_number_code = str(random.randint(1000, 9999))
-        self.correct_bomb_number_code = self.bomb_number_code
         self.symbols = ["%", "!", ";", "&"]
-        self.choose_symbol_order = random.sample(self.symbols, len(self.symbols))
-        self.correct_symbol_order = self.choose_symbol_order
         self.wire_colors = ["red", "green", "blue"]
-        self.choose_wire = random.choice(self.wire_colors)
-        self.correct_wire = self.choose_wire
+
+        # Initialize correct values
+        self.correct_wire = random.choice(self.wire_colors)
+        self.correct_symbol_order = random.sample(self.symbols, len(self.symbols))
+
+        # Store message
         self.message = ""
 
-        # Generate encrypted wire data
+        # Generate encrypted wire data based on correct wire
         self.shift_count = random.randint(1, 25)
         self.encrypted_wire = self.caesar_cipher_custom_shift(self.correct_wire, self.shift_count)
         self.encrypted_hint = self.caesar_cipher_custom_shift("A", self.shift_count)
 
-        # Generate symbol clues
+        # Generate symbol clues based on correct order
         self.symbol_clues = self.generate_logic_clues()
 
-        # Generate math equations
+        # Generate math equations based on bomb code
         self.math_equations = self.generate_math_equations_from_code()
 
-        # Create puzzle list
+        # Create puzzle list using the established correct values
         self.puzzles = [
-            {"type": "decrypt", "question": f"Decrypt: {self.encrypted_wire}, using A -> {self.encrypted_hint}",
+            {"type": "decrypt",
+             "question": f"Decrypt: {self.encrypted_wire}, using A -> {self.encrypted_hint}",
              "answer": self.correct_wire},
             {"type": "symbol",
              "question": f"Enter the correct symbol order: %, !, ;, &, using only these clues \n {self.symbol_clues}",
              "answer": "".join(self.correct_symbol_order)},
-            {"type": "code", "question": f"Crack the bomb code:\n {self.math_equations}",
-             "answer": self.correct_bomb_number_code}
+            {"type": "code",
+             "question": f"Crack the bomb code:\n {self.math_equations}",
+             "answer": self.bomb_number_code}
         ]
 
     def caesar_cipher_custom_shift(self, message, shift):
@@ -64,7 +79,7 @@ class GameState:
 
     def generate_math_equations_from_code(self):
         equations = []
-        for digit in self.correct_bomb_number_code:
+        for digit in self.bomb_number_code:
             target_result = int(digit)
             operation = random.choice(["+", "-", "*", "/"])
 
@@ -87,6 +102,8 @@ class GameState:
 
         return equations
 
-    def generate_puzzle(self, i):
-
-        return self.puzzles[i]
+    def generate_puzzle(self, puzzle_index):
+        """Generate a specific puzzle by index."""
+        if 0 <= puzzle_index < len(self.puzzles):
+            return self.puzzles[puzzle_index]
+        raise IndexError("Puzzle index out of range")

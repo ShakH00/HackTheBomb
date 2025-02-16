@@ -69,22 +69,19 @@ wires = [
 ]
 
 wire_colors = ["red", "green", "blue"]
-correct_wire = game_state.choose_wire
-print(correct_wire)
+print(game_state.correct_wire)
 
 # Symbol Keypad Module
 symbols = ["%", "!", ";", "&"]
 symbol_positions = [(600, 500), (700, 500), (800, 500), (900, 500)]
-correct_symbol_order = game_state.choose_symbol_order
-print(correct_symbol_order)
+print(game_state.correct_symbol_order)
 pressed_symbols = []
 symbols_completed = False
 
 # Number Code Module
-bomb_number_code = game_state.bomb_number_code
 player_input_code = ""
 code_correct = False
-print(bomb_number_code)
+print(game_state.bomb_number_code)
 
 # Network Setup to Receive Instructions from Player 2
 HOST = "localhost"
@@ -251,7 +248,7 @@ while running:
                                 first_wire_cut = wire["id"]  # Track first wire cut
 
                             # Check if wrong wire was cut first
-                            if first_wire_cut != correct_wire:
+                            if first_wire_cut != game_state.correct_wire:
                                 pygame.mouse.set_visible(True)
                                 screen.fill(RED)
                                 defused_text = big_font.render("BOOM! You cut the wrong wire first!", True, BLACK)
@@ -271,8 +268,8 @@ while running:
                     print(f"Pressed {symbols[idx]}")
 
                     # Check if pressed order is correct
-                    if len(pressed_symbols) == len(correct_symbol_order):
-                        if pressed_symbols == correct_symbol_order:
+                    if len(pressed_symbols) == len(game_state.correct_symbol_order):
+                        if pressed_symbols == game_state.correct_symbol_order:
                             print("Correct Keypad Entry!")
                             symbols_completed = True
                         else:
@@ -288,7 +285,7 @@ while running:
 
             if submit_button.collidepoint(event.pos):
                 if len(player_input_code) == 4:
-                    if player_input_code == bomb_number_code:
+                    if player_input_code == game_state.bomb_number_code:
                         print("Correct Code Entered!")
                         code_correct = True
                     else:
