@@ -60,7 +60,7 @@ wires = [
 ]
 
 wire_colors = ["red", "green", "blue"]
-correct_wire = game_state.wire_colors
+correct_wire = game_state.correct_wire
 print(correct_wire)
 
 # Symbol Keypad Module
