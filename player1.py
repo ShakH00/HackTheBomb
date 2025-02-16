@@ -1,3 +1,4 @@
+import os
 import pygame
 import sys
 import time
@@ -36,6 +37,14 @@ big_font = pygame.font.Font(None, 80)
 # Load scissor cursor image
 scissor_cursor = pygame.image.load("graphics/scissor_cursor.png")
 scissor_cursor = pygame.transform.scale(scissor_cursor, (32, 32))
+
+# Load countdown digit images (0-9)
+digit_images = []
+for i in range(10):
+    image_path = os.path.join("graphics/numbers", f"0{i}.png")
+    image = pygame.image.load(image_path)
+    image = pygame.transform.scale(image, (43, 60))  # Adjust image size here
+    digit_images.append(image)
 
 # Timer
 bomb_timer = 300  # 5-minute countdown
@@ -117,21 +126,31 @@ while running:
     bomb_inner = pygame.draw.rect(screen, (115, 107, 72), (60, 60, 1246, 648))
 
     # Draw box for clock
-    clock_outer = pygame.draw.rect(screen, (255, 0, 0), ((WIDTH / 2) - 75, 300, 150, 80))
-    clock_inner = pygame.draw.rect(screen, (0, 0, 0), ((WIDTH / 2) - 70, 305, 140, 70))
+    clock_outer = pygame.draw.rect(screen, (255, 0, 0), ((WIDTH / 2) - 100, 300, 197, 80))
+    clock_inner = pygame.draw.rect(screen, (0, 0, 0), ((WIDTH / 2) - 95, 305, 187, 70))
 
     # Calculate remaining time
     elapsed_time = time.time() - start_time
     remaining_time = max(0, bomb_timer - int(elapsed_time))
     minutes = remaining_time // 60
     seconds = remaining_time % 60
-    timer_text = font.render(f"{minutes}:{seconds:02}", True, RED)
-    screen.blit(timer_text, (((WIDTH / 2) - 30), 325))
+
+    # Split digits for minutes and seconds
+    min_tens = minutes // 10
+    min_ones = minutes % 10
+    sec_tens = seconds // 10
+    sec_ones = seconds % 10
+
+    # Draw countdown timer using images
+    screen.blit(digit_images[min_tens], ((WIDTH / 2) - 90, 310))
+    screen.blit(digit_images[min_ones], ((WIDTH / 2) - 50, 310))
+    screen.blit(digit_images[sec_tens], ((WIDTH / 2), 310))
+    screen.blit(digit_images[sec_ones], ((WIDTH / 2) + 43, 310))
 
     if remaining_time == 0:
         pygame.mouse.set_visible(True)
         screen.fill(RED)
-        defused_text = big_font.render("BOOM! You didnt defuse the bomb time!", True, BLACK)
+        defused_text = big_font.render("BOOM! You didn't defuse the bomb in time!", True, WHITE)
         screen.blit(defused_text, (WIDTH // 2 - 550, HEIGHT // 2 - 50))
         pygame.display.flip()
         pygame.time.delay(3000)  # Pause for 3 seconds
