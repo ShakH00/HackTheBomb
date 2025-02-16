@@ -93,7 +93,6 @@ symbols_completed = False
 # Number Code Module
 player_input_code = ""
 code_correct = False
-print(game_state.bomb_number_code)
 
 # Network Setup to Receive Instructions from Player 2
 HOST = "localhost"
@@ -329,7 +328,7 @@ while running:
                     player_input_code += event.unicode
                 elif event.key == pygame.K_RETURN:  # Pressing Enter submits the code
                     if len(player_input_code) == 4:
-                        if player_input_code == bomb_number_code:
+                        if player_input_code == game_state.bomb_number_code:
                             print("Correct Code Entered!")
                             code_correct = True
                         else:

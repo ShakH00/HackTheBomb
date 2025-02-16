@@ -228,7 +228,7 @@ def main():
 
         # Draw feedback if present
         if answer_feedback and time.time() < feedback_timer:
-            feedback_color = GREEN if "Correct" in answer_feedback else RED
+            feedback_color = RED
             feedback_text = font.render(answer_feedback, True, feedback_color)
             screen.blit(feedback_text, (50, 590))
 
@@ -248,10 +248,15 @@ def main():
             for button in quick_messages:
                 if button.handle_event(event):
                     send_message(button.text)
+                    answer_feedback = "Sending to defuser..."
 
             if submit_button.handle_event(event):
                 send_message(input_text)
                 input_text = ""
+                answer_feedback = "Sending to defuser..."
+                feedback_timer = time.time() + 2
+                puzzle_answer = ""
+
 
             # Handle answer input
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -261,6 +266,7 @@ def main():
                 if event.key == pygame.K_RETURN:
                     send_message(input_text)
                     input_text = ""
+                    answer_feedback = "Sending to defuser..."
                 elif event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
                 else:
@@ -268,12 +274,13 @@ def main():
 
             if event.type == pygame.KEYDOWN and input_active:
                 if event.key == pygame.K_RETURN:
-                    if current_puzzle and puzzle_answer == current_puzzle["answer"]:
-                        answer_feedback = "Correct! Sending to defuser..."
-                        send_message(f"SOLUTION: {puzzle_answer}")
-                        current_puzzle = game_state.get_puzzle(modules.index(current_module))
-                    else:
-                        answer_feedback = "Incorrect! Try again."
+                    #if current_puzzle and puzzle_answer == current_puzzle["answer"]:
+                    answer_feedback = "Sending to defuser..."
+                    send_message(input_text)
+                    input_text = ""
+                    current_puzzle = game_state.get_puzzle(modules.index(current_module))
+                    #else:
+                        #answer_feedback = "Incorrect! Try again."
                     feedback_timer = time.time() + 2
                     puzzle_answer = ""
                 elif event.key == pygame.K_BACKSPACE:
