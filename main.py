@@ -18,15 +18,15 @@ pygame.display.set_icon(icon)
 expert = pygame.image.load("graphics/Expertlogo.jpg")
 defuser = pygame.image.load("graphics/defuser.jpg")
 
-expert = pygame.transform.scale(expert, (303, 303))
+expert = pygame.transform.scale(expert, (300, 300))
 defuser = pygame.transform.scale(defuser, (300, 300))
 
 # Main Text
-main_text = pygame.image.load("graphics/main_text.png")
+main_text = pygame.image.load("graphics/main_txt.png")
 
 # Button rectangles for collision detection
-expert_rect = expert.get_rect(topleft=(200, 350))
-defuser_rect = defuser.get_rect(topleft=(1166 - 303, 350))
+expert_rect = expert.get_rect(topleft=(200, 320))
+defuser_rect = defuser.get_rect(topleft=(1166 - 303, 320))
 
 """Display the main screen"""
 def main_screen():
@@ -34,7 +34,7 @@ def main_screen():
     clock = pygame.time.Clock()
 
     # Load background once before the loop
-    background_image = pygame.image.load("graphics/placeholder_bg.png")
+    background_image = pygame.image.load("graphics/bomb.jpg")
 
     while running:
         screen.blit(background_image, (0, 0))
@@ -67,7 +67,7 @@ def main_screen():
                     run_expert()
 
         # Draw the main text
-        main_text_rect = main_text.get_rect(center=(WIDTH // 2, HEIGHT // 4))
+        main_text_rect = main_text.get_rect(center=(WIDTH // 2, (HEIGHT // 3) - 20))
         screen.blit(main_text, main_text_rect)
 
         pygame.display.flip()
