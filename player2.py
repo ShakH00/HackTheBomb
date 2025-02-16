@@ -1,7 +1,6 @@
 import pygame
 import sys
 import socket
-import threading
 import time
 import random
 from game_state import GameState
@@ -23,19 +22,20 @@ WIDTH, HEIGHT = 1366, 768
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Bomb Defusal - Player 2 (Expert)")
 
-# Colors
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (120, 120, 120)
-LIGHT_GRAY = (200, 200, 200)
-BLUE = (0, 100, 255)
-RED = (255, 50, 50)
-GREEN = (50, 200, 50)
+# Terminal style Colors
+BLACK      = (0, 0, 0)
+DARK_GRAY  = (30, 30, 30)
+GREEN      = (0, 255, 0)
+DARK_GREEN = (0, 150, 0)
+RED        = (255, 50, 50)
+# When a button is hovered, use a slightly lighter gray:
+LIGHT_GRAY = (100, 100, 100)
+WHITE      = (255, 255, 255)  # (not used extensively)
 
-# Fonts
-font = pygame.font.Font(None, 36)
-title_font = pygame.font.Font(None, 48)
-small_font = pygame.font.Font(None, 24)
+# Monospaced Fonts (using Consolas if available)
+font       = pygame.font.Font(pygame.font.match_font("consolas"), 28)
+title_font = pygame.font.Font(pygame.font.match_font("consolas"), 40)
+small_font = pygame.font.Font(pygame.font.match_font("consolas"), 20)
 
 # Network Setup
 HOST = "localhost"
@@ -85,19 +85,20 @@ manual_pages = {
     ]
 }
 
-# Button class for interactive elements
+# Button class for interactive elements (now themed like terminal UI)
 class Button:
-    def __init__(self, x, y, width, height, text, color=LIGHT_GRAY):
+    def __init__(self, x, y, width, height, text, color=DARK_GRAY):
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.color = color
         self.hover = False
 
     def draw(self, surface):
-        color = GRAY if self.hover else self.color
-        pygame.draw.rect(surface, color, self.rect)
-        pygame.draw.rect(surface, BLACK, self.rect, 2)
-        text_surface = font.render(self.text, True, BLACK)
+        # Use a slightly lighter fill when hovered
+        fill_color = DARK_GRAY if not self.hover else LIGHT_GRAY
+        pygame.draw.rect(surface, fill_color, self.rect)
+        pygame.draw.rect(surface, GREEN, self.rect, 2)
+        text_surface = font.render(self.text, True, GREEN)
         text_rect = text_surface.get_rect(center=self.rect.center)
         surface.blit(text_surface, text_rect)
 
@@ -108,7 +109,6 @@ class Button:
             if self.hover:
                 return True
         return False
-
 
 # Create buttons for different modules
 module_buttons = [
@@ -130,7 +130,7 @@ puzzle_rect = pygame.Rect(50, 330, 650, 200)
 answer_rect = pygame.Rect(50, 540, 400, 40)
 submit_button = Button(460, 540, 100, 40, "Submit")
 
-# Custom message input
+# Custom message input (kept from original functionality)
 input_rect = pygame.Rect(50, HEIGHT - 100, 400, 40)
 send_button = Button(460, HEIGHT - 100, 100, 40, "Send")
 input_text = ""
@@ -142,19 +142,16 @@ puzzle_answer = ""
 answer_feedback = ""
 feedback_timer = 0
 
-
 def send_message(message):
     try:
         client_socket.send(message.encode())
     except:
         print("Error sending message")
 
-
 def draw_wrapped_text(surface, text, rect, font, color):
     words = text.split(' ')
     lines = []
     current_line = []
-
     for word in words:
         current_line.append(word)
         width = font.size(' '.join(current_line))[0]
@@ -166,10 +163,8 @@ def draw_wrapped_text(surface, text, rect, font, color):
             else:
                 lines.append(word)
                 current_line = []
-
     if current_line:
         lines.append(' '.join(current_line))
-
     y = rect.top
     for line in lines:
         text_surface = font.render(line, True, color)
@@ -181,7 +176,7 @@ def main():
 
     # Wait for puzzle info file
     while not initialize_from_file():
-        time.sleep(1)  # Wait a second before trying again
+        time.sleep(1)
         print("Retrying...")
 
     print("Puzzle information loaded successfully!")
@@ -195,41 +190,42 @@ def main():
 
     running = True
     while running:
-        screen.fill(WHITE)
+        # Terminal background
+        screen.fill(BLACK)
 
-        # Draw title
-        title = title_font.render("Bomb Defusal Expert Console", True, BLACK)
-        screen.blit(title, (WIDTH // 2 - 200, 10))
+        # Draw title in terminal style (centered green text)
+        title = title_font.render("Bomb Defusal Expert Console", True, GREEN)
+        screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 10))
 
-        # Draw all buttons
+        # Draw buttons (module_buttons and quick_messages)
         for button in module_buttons + quick_messages:
             button.draw(screen)
 
-        # Draw current module manual
+        # Draw current module manual in a terminal-style panel
         manual_rect = pygame.Rect(700, 50, 600, HEIGHT - 100)
-        pygame.draw.rect(screen, LIGHT_GRAY, manual_rect)
+        pygame.draw.rect(screen, DARK_GRAY, manual_rect)
+        pygame.draw.rect(screen, GREEN, manual_rect, 2)
         if current_module in manual_pages:
             for i, line in enumerate(manual_pages[current_module]):
-                text = small_font.render(line, True, BLACK)
+                text = small_font.render(line, True, GREEN)
                 screen.blit(text, (710, 60 + i * 25))
 
-        # Draw puzzle area
-        pygame.draw.rect(screen, WHITE, puzzle_rect)
-        pygame.draw.rect(screen, BLACK, puzzle_rect, 2)
+        # Draw puzzle area in terminal style
+        pygame.draw.rect(screen, DARK_GRAY, puzzle_rect)
+        pygame.draw.rect(screen, GREEN, puzzle_rect, 2)
         if current_puzzle:
-            draw_wrapped_text(screen, current_puzzle["question"], puzzle_rect, font, BLACK)
+            draw_wrapped_text(screen, current_puzzle["question"], puzzle_rect, font, GREEN)
 
-        # Draw answer input
-        pygame.draw.rect(screen, LIGHT_GRAY if input_active else WHITE, answer_rect)
-        pygame.draw.rect(screen, BLACK, answer_rect, 2)
-        text_surface = font.render(puzzle_answer, True, BLACK)
+        # Draw answer input area in terminal style
+        pygame.draw.rect(screen, DARK_GRAY if input_active else BLACK, answer_rect)
+        pygame.draw.rect(screen, GREEN, answer_rect, 2)
+        text_surface = font.render(puzzle_answer, True, GREEN)
         screen.blit(text_surface, (answer_rect.x + 5, answer_rect.y + 5))
         submit_button.draw(screen)
 
-        # Draw feedback if present
+        # Draw feedback message if present
         if answer_feedback and time.time() < feedback_timer:
-            feedback_color = RED
-            feedback_text = font.render(answer_feedback, True, feedback_color)
+            feedback_text = font.render(answer_feedback, True, RED)
             screen.blit(feedback_text, (50, 590))
 
         # Event handling
@@ -237,14 +233,14 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-            # Handle module selection
+            # Handle module selection via buttons
             for i, button in enumerate(module_buttons):
                 if button.handle_event(event):
                     current_module = modules[i]
                     current_puzzle = game_state.get_puzzle(i)
                     puzzle_answer = ""
 
-            # Handle quick messages
+            # Handle quick messages via buttons
             for button in quick_messages:
                 if button.handle_event(event):
                     send_message(button.text)
@@ -259,11 +255,11 @@ def main():
                 feedback_timer = time.time() + 2
                 puzzle_answer = ""
 
-
-            # Handle answer input
+            # Activate answer input area if clicked
             if event.type == pygame.MOUSEBUTTONDOWN:
                 input_active = answer_rect.collidepoint(event.pos)
 
+            # Handle keyboard input when answer input is active
             if event.type == pygame.KEYDOWN and input_active:
                 if event.key == pygame.K_RETURN:
                     send_message(input_text)
@@ -274,6 +270,7 @@ def main():
                 else:
                     input_text += event.unicode
 
+            # Secondary input handling (for puzzle_answer) – preserved from your original logic
             if event.type == pygame.KEYDOWN and input_active:
                 if event.key == pygame.K_RETURN:
                     #if current_puzzle and puzzle_answer == current_puzzle["answer"]:
@@ -295,7 +292,6 @@ def main():
     client_socket.close()
     pygame.quit()
     sys.exit()
-
 
 if __name__ == "__main__":
     main()
