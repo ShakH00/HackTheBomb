@@ -4,9 +4,12 @@ import time
 import socket
 import threading
 import random
+from game_state import GameState
 
 # Initialize pygame
 pygame.init()
+
+game_state = GameState()
 
 # Set the screen dimensions and create the screen object
 WIDTH = 1366
@@ -59,19 +62,17 @@ wires = [
 # Symbol Keypad Module
 symbols = ["%", "Ω", "Ψ", "∑"]
 symbol_positions = [(600, 500), (700, 500), (800, 500), (900, 500)]
-correct_symbol_order = random.sample(symbols, len(symbols))
+correct_symbol_order = game_state.correct_symbol_order
 print(correct_symbol_order)
 pressed_symbols = []
 symbols_completed = False
 
 # Number Code Module
-bomb_number_code = str(random.randint(1000, 9999)) #randomly selected code
-print(bomb_number_code)
+bomb_number_code = game_state.bomb_number_code
 player_input_code = ""
 code_correct = False
 wire_colors = ["red", "green", "blue"]
-correct_wire = random.choice(wire_colors) #randomly selected wire to be cut
-print(correct_wire)
+correct_wire = game_state.wire_colors
 
 # Network Setup to Receive Instructions from Player 2
 HOST = "localhost"
