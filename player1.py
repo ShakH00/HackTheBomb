@@ -31,8 +31,6 @@ big_font = pygame.font.Font(None, 80)
 bomb_timer = 300  # 5-minute countdown
 start_time = time.time()
 
-# Correct wire order
-correct_wire = "red"  # Player must cut the red wire first
 
 # Wire Module (Wonky wires)
 def generate_wonky_wire(start_x, start_y, length, color, wire_id):
@@ -52,16 +50,20 @@ wires = [
 ]
 
 # Symbol Keypad Module
-symbols = ["★", "Ω", "Ψ", "∑"]
+symbols = ["%", "Ω", "Ψ", "∑"]
 symbol_positions = [(600, 500), (700, 500), (800, 500), (900, 500)]
-correct_symbol_order = ["Ω", "∑", "Ψ", "★"]
+correct_symbol_order = random.sample(symbols, len(symbols))
+print(correct_symbol_order)
 pressed_symbols = []
 symbols_completed = False
 
 # Number Code Module
-bomb_number_code = "3284"
+bomb_number_code = str(random.randint(1000, 9999)) #randomly selected code
 player_input_code = ""
 code_correct = False
+wire_colors = ["red", "green", "blue"]
+correct_wire = random.choice(wire_colors) #randomly selected wire to be cut
+print(correct_wire)
 
 # Network Setup to Receive Instructions from Player 2
 HOST = "localhost"
@@ -90,7 +92,7 @@ threading.Thread(target=receive_data, daemon=True).start()
 running = True
 first_wire_cut = None  # Track the first wire cut
 bomb_defused = False  # Track if bomb has been successfully defused
-correct_wire = False
+correct_wire_bool = False
 
 while running:
     screen.fill(WHITE)
@@ -141,8 +143,7 @@ while running:
                         if not wire["cut"]:  # Only process uncut wires
                             wire["cut"] = True
                             print(f"Wire {wire['id']} cut!")
-                            if wire['id'] == "red":
-                                correct_wire = True
+
 
                             if first_wire_cut is None:
                                 first_wire_cut = wire["id"]  # Track first wire cut
@@ -151,6 +152,7 @@ while running:
                             if first_wire_cut != correct_wire:
                                 print("BOOM! You cut the wrong wire first! 💥")
                                 running = False  # End game (Bomb explodes)
+                            correct_wire_bool = True
 
                         break
 
@@ -186,7 +188,7 @@ while running:
                     player_input_code += event.unicode
 
     # Check if all tasks are completed
-    if correct_wire and symbols_completed and code_correct:
+    if correct_wire_bool and symbols_completed and code_correct:
         bomb_defused = True
 
     # Display Bomb Defused Message
