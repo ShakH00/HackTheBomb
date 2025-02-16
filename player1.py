@@ -59,6 +59,7 @@ symbols_completed = False
 
 # Number Code Module
 bomb_number_code = str(random.randint(1000, 9999)) #randomly selected code
+print(bomb_number_code)
 player_input_code = ""
 code_correct = False
 wire_colors = ["red", "green", "blue"]
@@ -119,7 +120,7 @@ while running:
         screen.blit(text, (symbol_positions[idx][0] + 15, symbol_positions[idx][1] + 15))
 
     # Draw Number Code Area
-    bomb_code_text = font.render(f"Code: {bomb_number_code}", True, BLUE)
+    bomb_code_text = font.render(f"Input Code:", True, BLUE)
     screen.blit(bomb_code_text, (1000, 250))
 
     # Draw input box for number entry
