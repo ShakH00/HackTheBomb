@@ -172,6 +172,8 @@ while running:
 
     # Draw input box for number entry
     input_box = pygame.draw.rect(screen, GRAY if input_active else DARK_GRAY, (990, 300, 200, 60))
+    if code_correct:
+        pygame.draw.rect(screen, GREEN, (990, 300, 200, 60))
     pygame.draw.rect(screen, WHITE, (990, 300, 200, 60), 3)
     input_text = font.render(player_input_code, True, WHITE)
     screen.blit(input_text, (1000, 310))
