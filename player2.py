@@ -288,7 +288,7 @@ def main():
         # Draw feedback message if present
         if answer_feedback and time.time() < feedback_timer:
             feedback_text = font.render(answer_feedback, True, RED)
-            screen.blit(feedback_text, (50, 590))
+            screen.blit(feedback_text, (60, 550))
 
         # Event handling
         for event in pygame.event.get():
