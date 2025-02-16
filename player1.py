@@ -128,6 +128,15 @@ while running:
     timer_text = font.render(f"{minutes}:{seconds:02}", True, RED)
     screen.blit(timer_text, (((WIDTH / 2) - 30), 325))
 
+    if remaining_time == 0:
+        pygame.mouse.set_visible(True)
+        screen.fill(RED)
+        defused_text = big_font.render("BOOM! You didnt defuse the bomb time!", True, BLACK)
+        screen.blit(defused_text, (WIDTH // 2 - 550, HEIGHT // 2 - 50))
+        pygame.display.flip()
+        pygame.time.delay(3000)  # Pause for 3 seconds
+        running = False  # End game (Bomb explodes)
+
     # Display instructions from Player 2
     instruction_text = font.render(received_message, True, BLACK)
     screen.blit(instruction_text, (50, 100))
