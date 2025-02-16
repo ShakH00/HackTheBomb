@@ -87,6 +87,21 @@ green_wire = pygame.transform.scale(green_wire, (225,25))
 green_wire_cut = pygame.image.load("graphics/greenwirecutted.png")
 green_wire_cut = pygame.transform.scale(green_wire_cut, (225,25))
 
+# Background wires
+cable_blue = pygame.image.load("graphics/blue.png")
+cable_black = pygame.image.load("graphics/black.png")
+cable_black_frayed = pygame.image.load("graphics/black_frayed.png")
+cable_black_frayed_2 = pygame.image.load("graphics/black_frayed_2.png")
+cable_white_frayed = pygame.image.load("graphics/white_frayed.png")
+
+# cable_blue = pygame.transform.scale(cable_blue, (100,25))
+# cable_black = pygame.transform.scale(cable_black, (100,25))
+# cable_black_frayed = pygame.transform.scale(cable_black_frayed, (100,25))
+# cable_black_frayed_2 = pygame.transform.scale(cable_black_frayed_2, (100,25))
+# cable_white_frayed = pygame.transform.scale(cable_white_frayed, (100,25))
+
+
+
 # Phone
 phone = pygame.image.load("graphics/phone2.png")
 phone = pygame.transform.scale(phone, (300, 200))
@@ -182,6 +197,15 @@ while running:
     screen.blit(screw, (70, 678))
     screen.blit(screw, (1275, 70))
     screen.blit(screw, (1275, 678))
+
+    # Background cables
+    cable_blue_rotated = pygame.transform.rotate(cable_blue, -45)
+    screen.blit(cable_blue_rotated, (570, 150))
+    screen.blit(cable_black, (265, 210))
+    cable_black_frayed_rotated = pygame.transform.rotate(cable_black_frayed, -25)
+    screen.blit(cable_black_frayed_rotated, (655, 100))
+    cable_white_frayed_rotated = pygame.transform.rotate(cable_white_frayed, 75)
+    screen.blit(cable_white_frayed_rotated, (330, 130))
 
     # Phone
     screen.blit(phone, (50, 40))
@@ -279,6 +303,9 @@ while running:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         pygame.mouse.set_visible(True)
 
+    # Box for symbols
+    box = pygame.draw.rect(screen, DARK_GRAY, (75, 475, 425, 125))
+
     # Draw Symbol Keypad
     for idx, symbol in enumerate(symbols):
         pygame.draw.rect(screen, GRAY, (symbol_positions[idx][0], symbol_positions[idx][1], 75, 75))
@@ -292,8 +319,8 @@ while running:
             screen.blit(text, (symbol_positions[idx][0] + 22, symbol_positions[idx][1] + 22))
 
     # Draw Number Code Area
-    bomb_code_text = font.render(f"Input Code:", True, BLUE)
-    screen.blit(bomb_code_text, (610, 400))
+    # bomb_code_text = font.render(f"Input Code:", True, BLACK)
+    # screen.blit(bomb_code_text, (610, 400))
 
     # Draw input box for number entry
     input_box = pygame.draw.rect(screen, GRAY if input_active else DARK_GRAY, (600, 450, 200, 60))
