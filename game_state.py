@@ -63,7 +63,7 @@ class GameState:
 
     def generate_math_equations_from_code(self):
         equations = []
-        for digit in self.bomb_number_code:
+        for digit in self.correct_bomb_number_code:
             target_result = int(digit)
             operation = random.choice(["+", "-", "*", "/"])
 
