@@ -148,4 +148,4 @@ The game was built using:
 - 
 
 ## Screenshots
-You can view them in the screenshots directory
+You can view them in the [screenshots](https://github.com/ShakH00/HackTheBomb/tree/main/screenshots) directory
