@@ -73,7 +73,7 @@ print(game_state.correct_wire)
 
 # Symbol Keypad Module
 symbols = ["%", "!", ";", "&"]
-symbol_positions = [(600, 500), (700, 500), (800, 500), (900, 500)]
+symbol_positions = [(100, 500), (200, 500), (300, 500), (400, 500)]
 print(game_state.correct_symbol_order)
 pressed_symbols = []
 symbols_completed = False
@@ -192,32 +192,32 @@ while running:
     for idx, symbol in enumerate(symbols):
         pygame.draw.rect(screen, GRAY, (symbol_positions[idx][0], symbol_positions[idx][1], 75, 75))
         text = font.render(symbol, True, BLACK)
-        screen.blit(text, (symbol_positions[idx][0] + 15, symbol_positions[idx][1] + 15))
+        screen.blit(text, (symbol_positions[idx][0] + 22, symbol_positions[idx][1] + 20))
 
     if symbols_completed:
         for idx, symbol in enumerate(symbols):
             pygame.draw.rect(screen, GREEN, (symbol_positions[idx][0], symbol_positions[idx][1], 75, 75))
             text = font.render(symbol, True, BLACK)
-            screen.blit(text, (symbol_positions[idx][0] + 15, symbol_positions[idx][1] + 15))
+            screen.blit(text, (symbol_positions[idx][0] + 22, symbol_positions[idx][1] + 22))
 
     # Draw Number Code Area
     bomb_code_text = font.render(f"Input Code:", True, BLUE)
-    screen.blit(bomb_code_text, (1000, 250))
+    screen.blit(bomb_code_text, (610, 400))
 
     # Draw input box for number entry
-    input_box = pygame.draw.rect(screen, GRAY if input_active else DARK_GRAY, (990, 300, 200, 60))
-    pygame.draw.rect(screen, WHITE, (990, 300, 200, 60), 3)
+    input_box = pygame.draw.rect(screen, GRAY if input_active else DARK_GRAY, (600, 450, 200, 60))
+    pygame.draw.rect(screen, WHITE, (600, 450, 200, 60), 3)
     input_text = font.render(player_input_code, True, WHITE)
-    screen.blit(input_text, (1000, 310))
+    screen.blit(input_text, (660, 465))
 
     # Draw Submit Button
-    submit_button = pygame.Rect(990, 370, 200, 50)
+    submit_button = pygame.Rect(600, 520, 200, 50)
     pygame.draw.rect(screen, BLUE, submit_button)
     submit_text = font.render("Submit", True, WHITE)
     screen.blit(submit_text, (submit_button.x + 45, submit_button.y + 10))
 
     if code_correct:
-        pygame.draw.rect(screen, GREEN, (990, 370, 200, 50))
+        pygame.draw.rect(screen, GREEN, (600, 520, 200, 50))
         screen.blit(submit_text, (submit_button.x + 45, submit_button.y + 10))
 
     # if time_reduced:
