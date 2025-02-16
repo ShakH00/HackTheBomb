@@ -234,9 +234,22 @@ def main():
                 if button.handle_event(event):
                     send_message(button.text)
 
+            if submit_button.handle_event(event):
+                send_message(input_text)
+                input_text = ""
+
             # Handle answer input
             if event.type == pygame.MOUSEBUTTONDOWN:
                 input_active = answer_rect.collidepoint(event.pos)
+
+            if event.type == pygame.KEYDOWN and input_active:
+                if event.key == pygame.K_RETURN:
+                    send_message(input_text)
+                    input_text = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    input_text = input_text[:-1]
+                else:
+                    input_text += event.unicode
 
             if event.type == pygame.KEYDOWN and input_active:
                 if event.key == pygame.K_RETURN:

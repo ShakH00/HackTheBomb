@@ -12,6 +12,7 @@ class GameState:
         self.wire_colors = ["red", "green", "blue"]
         self.choose_wire = random.choice(self.wire_colors)
         self.correct_wire = self.choose_wire
+        self.message = ""
 
         # Generate encrypted wire data
         self.shift_count = random.randint(1, 25)
