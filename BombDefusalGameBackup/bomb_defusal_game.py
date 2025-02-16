@@ -5,12 +5,9 @@ import zipfile
 import os
 
 
-
-
-
 # Set up the main screen
-SCREEN_WIDTH, SCREEN_HEIGHT = 1600, 1000
-screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+SCREEN_WIDTH, SCREEN_HEIGHT = 1600, 900
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 
 def run_game():
@@ -18,12 +15,9 @@ def run_game():
     pygame.init()
 
     # Set up the main screen
-    SCREEN_WIDTH, SCREEN_HEIGHT = 1600, 1000
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    SCREEN_WIDTH, SCREEN_HEIGHT = 1600, 900
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Main Window")
-
-
-
 
     # Set up child windows
     CHILD_WIDTH, CHILD_HEIGHT = 700, 650
@@ -48,10 +42,8 @@ def run_game():
         child_screen2_pos = (SCREEN_WIDTH - CHILD_WIDTH - 40, 50)  # Position relative to main window
         screen.blit(child_screen1, child_screen1_pos)
         screen.blit(child_screen2, child_screen2_pos)
-        pygame.draw.rect(screen, (128, 128, 128),
-                         (child_screen1_pos[0] - 1, child_screen1_pos[1] - 1, CHILD_WIDTH + 2, CHILD_HEIGHT + 2), 2)
-        pygame.draw.rect(screen, (128, 128, 128),
-                         (child_screen2_pos[0] - 1, child_screen2_pos[1] - 1, CHILD_WIDTH + 2, CHILD_HEIGHT + 2), 2)
+        pygame.draw.rect(screen, (128, 128, 128), (child_screen1_pos[0] - 1, child_screen1_pos[1] - 1, CHILD_WIDTH + 2, CHILD_HEIGHT + 2), 2)
+        pygame.draw.rect(screen, (128, 128, 128), (child_screen2_pos[0] - 1, child_screen2_pos[1] - 1, CHILD_WIDTH + 2, CHILD_HEIGHT + 2), 2)
 
     # Function to add image and button to child screen
     def add_content_to_child_screen(child_screen):
@@ -83,7 +75,7 @@ def run_game():
 
         black = (255, 255, 255)
         white = (0, 0, 0)
-        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)  # Set full-screen mode
+        screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         pygame.display.set_caption("Bomb Defuse Game")
 
         # Load instruction images
@@ -107,8 +99,7 @@ def run_game():
         button_margin = 20
         button_size = next_button.get_width(), next_button.get_height()
         next_button_pos = button_margin + 11, screen.get_height() - button_margin - button_size[1] - 320
-        back_button_pos = screen.get_width() - button_margin - button_size[
-            0] - 11, screen.get_height() - button_margin - button_size[1] - 320
+        back_button_pos = screen.get_width() - button_margin - button_size[0] - 11, screen.get_height() - button_margin - button_size[1] - 320
 
         def display_instruction_page(page_index):
             screen.blit(instruction_images[page_index], (0, 0))  # Display instruction page
@@ -121,8 +112,7 @@ def run_game():
             pygame.draw.rect(screen, black, quit_button_rect)
             quit_font = pygame.font.Font(None, 30)
             quit_text = quit_font.render("Back", True, white)
-            quit_text_rect = quit_text.get_rect(
-                center=(quit_button_x + quit_button_width / 2, quit_button_y + quit_button_height / 2))
+            quit_text_rect = quit_text.get_rect(center=(quit_button_x + quit_button_width / 2, quit_button_y + quit_button_height / 2))
             screen.blit(quit_text, quit_text_rect)
 
         running = True
@@ -151,7 +141,6 @@ def run_game():
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         mouse_pos = pygame.mouse.get_pos()
                         if quit_button_rect.collidepoint(mouse_pos):
-                            run_game()
                             pygame.quit()
                             sys.exit()
 
@@ -206,7 +195,7 @@ def run_game():
             elif event.type == pygame.VIDEORESIZE:
                 # Resize the main screen
                 SCREEN_WIDTH, SCREEN_HEIGHT = event.w, event.h
-                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Check for mouse click on child screens
                 mouse_pos = pygame.mouse.get_pos()
@@ -229,8 +218,6 @@ def run_game():
         # Update the display
         pygame.display.flip()
 
-
-
     pygame.quit()
     sys.exit()
 
@@ -239,7 +226,7 @@ def expert_loading_screen():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Expert Loading Screen")
     # Define colors
     WHITE = (255, 255, 255)
@@ -273,7 +260,7 @@ def expert_loading_screen():
 
 def show_text_window():
     # Set up the text window
-    text_window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+    text_window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Text Window")
 
     # Fill the text window with black color
@@ -353,7 +340,6 @@ def show_text_window():
                     game_screen(screen)
 
 
-
 def game_screen(screen):
     orange = (236, 88, 0)
     black = (0, 0, 0)
@@ -363,8 +349,6 @@ def game_screen(screen):
 
     # Fill the screen with orange color
     screen.fill(orange)
-
-
     video_playing = False
 
     paint = pygame.image.load("graphics/oldpaint.png")
@@ -376,8 +360,6 @@ def game_screen(screen):
         paint_rect = pos1
         screen.blit(paint,paint_rect)
 
-
-
     # Draw a rounded rectangle for the main window
     main_rect = pygame.Rect(35, 50, screen.get_width() - 70, screen.get_height() - 100)
     pygame.draw.rect(screen, black, main_rect, border_radius=30)
@@ -387,7 +369,6 @@ def game_screen(screen):
     bomb_bg_rect = bomb_bg.get_rect()
     bomb_bg_rect = (45, 63, screen.get_width() - 70, screen.get_height() - 90)
     bomb_bg = pygame.transform.scale(bomb_bg, (screen.get_width() - 90, screen.get_height() - 130))
-
 
     explosive = pygame.image.load("graphics/explosive1.png")
     explosive_rect = explosive.get_rect()
@@ -404,21 +385,17 @@ def game_screen(screen):
     downgreen_glow_rect = downgreen_glow.get_rect()
     downgreen_glow = pygame.transform.scale(downgreen_glow,(480,100))
 
-
     upgreen_glow = pygame.image.load("graphics/up green light.png")
     upgreen_glow_rect = upgreen_glow.get_rect()
     upgreen_glow = pygame.transform.scale(upgreen_glow,(480,100))
-
 
     battery = pygame.image.load("graphics/battery.png")
     battery_rect = battery.get_rect()
     battery_rect = (330, 560, screen.get_width() - 50, screen.get_height() - 95)
     battery = pygame.transform.scale(battery, (280, 200))
 
-
     # Display the bomb image
     screen.blit(bomb_bg, bomb_bg_rect)
-
     screen.blit(explosive,explosive_rect)
     screen.blit(battery,battery_rect)
 
@@ -442,7 +419,6 @@ def game_screen(screen):
     # Calculate dimensions for puzzle windows
     puzzle_width = (bomb_bg_rect[2] - 60) // 3.1  # Divide the remaining width into three parts
     puzzle_height = (bomb_bg_rect[3] - 40) // 2  # Set the height to half of the bomb image's height
-
 
     #load image for clickme btn module
     click_me = pygame.image.load("graphics/clickmebtn.png")
@@ -548,7 +524,6 @@ def game_screen(screen):
     musiccurrent_image4 = 0
     musiccurrent_image5 = 0
 
-
     musicbtn1_images[0] = pygame.transform.scale(musicbtn1_images[0], (50, 80))
     musicbtn1_images[1] = pygame.transform.scale(musicbtn1_images[1], (50, 80))
     musicbtn1_images[2] = pygame.transform.scale(musicbtn1_images[2], (50, 80))
@@ -574,7 +549,6 @@ def game_screen(screen):
     musicbtn3_images_pos = 750, 330, puzzle_width - 50, puzzle_height - 95
     musicbtn4_images_pos = 800, 330, puzzle_width - 50, puzzle_height - 95
     musicbtn5_images_pos = 850, 330, puzzle_width - 50, puzzle_height - 95
-
 
     #timer container
     timerdis = pygame.image.load("graphics/timerdisplay.png")
@@ -612,7 +586,6 @@ def game_screen(screen):
     upbtn5_rect = upbtn5.get_rect()
     upbtn5_rect = pygame.Rect(1300, 220, 50,  95)
     upbtn5 = pygame.transform.scale(upbtn5, (50, 50))
-
 
     #downbutton
     downbtn1 = pygame.image.load("graphics/down_button.png")
@@ -676,18 +649,15 @@ def game_screen(screen):
 
     ]
 
-
     current_image1=0
     current_image2=0
     current_image3 = 0
     current_image4 = 0
     current_image5 = 0
 
-
     btn1_images[0] = pygame.transform.scale(btn1_images[0], (50,100))
     btn1_images[1] = pygame.transform.scale(btn1_images[1], (50, 100))
     btn1_images[2] = pygame.transform.scale(btn1_images[2], (50, 100))
-
 
     btn2_images[0] = pygame.transform.scale(btn2_images[0],(50,100))
     btn2_images[1] = pygame.transform.scale(btn2_images[1], (50, 100))
@@ -701,11 +671,9 @@ def game_screen(screen):
     btn4_images[1] = pygame.transform.scale(btn4_images[1], (50, 100))
     btn4_images[2] = pygame.transform.scale(btn4_images[2], (50, 100))
 
-
     btn5_images[0] = pygame.transform.scale(btn5_images[0], (50, 100))
     btn5_images[1] = pygame.transform.scale(btn5_images[1], (50, 100))
     btn5_images[2] = pygame.transform.scale(btn5_images[2], (50, 100))
-
 
     btn1_images_pos = 1100,300,puzzle_width - 50, puzzle_height - 95
     btn2_images_pos = 1150,300,puzzle_width - 50, puzzle_height -95
@@ -779,8 +747,6 @@ def game_screen(screen):
 
     screen.blit(musicbtn5_images[0], musicbtn5_images_pos)
 
-
-
     screen.blit(codenum,codenum_rect)
 
     #blitting upbuttons
@@ -818,8 +784,7 @@ def game_screen(screen):
     pygame.draw.rect(screen, orange, quit_button_rect)
     quit_font = pygame.font.Font(None, 30)
     quit_text = quit_font.render("QUIT", True, black)
-    quit_text_rect = quit_text.get_rect(
-        center=(quit_button_x + quit_button_width / 2, quit_button_y + quit_button_height / 2))
+    quit_text_rect = quit_text.get_rect(center=(quit_button_x + quit_button_width / 2, quit_button_y + quit_button_height / 2))
     screen.blit(quit_text, quit_text_rect)
 
     start_time = time.time()
@@ -836,11 +801,7 @@ def game_screen(screen):
     image_blitted = False
     musicimage_blitted = False
 
-
     while countdown > 0:  # Changed to stop at 0
-
-
-
         # Draw bomb timer
         bomb_timer_width = puzzle_width * 1 + 60 + button_margin * 2  # Reduced width
         bomb_time_height = 190
@@ -848,7 +809,6 @@ def game_screen(screen):
         bomb_time_y = 553
         new_child_rect = pygame.Rect(bomb_time_x + 105, bomb_time_y, bomb_timer_width - 210, bomb_time_height)
         pygame.draw.rect(screen, black, new_child_rect)
-
 
         # Calculate minutes and seconds
         minutes = countdown // 60
@@ -877,7 +837,6 @@ def game_screen(screen):
 
         # Define current image index for btn1_images
 
-
         # Inside the main loop, handle events for down button clicks
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -902,25 +861,18 @@ def game_screen(screen):
                 elif downbtn5_rect.collidepoint(mouse_pos):
                     # Increment the current image index for btn5
                     current_image5 = (current_image5 + 1) % len(btn5_images)
-
-
                 # Check if up button is clicked
                 elif upbtn1_rect.collidepoint(mouse_pos):
                     # decrement the current image index
                     current_image1 = (current_image1 - 1) % len(btn1_images)
-
                 elif upbtn2_rect.collidepoint(mouse_pos):
                     current_image2 = (current_image2 - 1) % len(btn2_images)
-
                 elif upbtn3_rect.collidepoint(mouse_pos):
                     current_image3 = (current_image3 - 1) % len(btn3_images)
-
                 elif upbtn4_rect.collidepoint(mouse_pos):
                     current_image4 = (current_image4 - 1) % len(btn4_images)
-
                 elif upbtn5_rect.collidepoint(mouse_pos):
                     current_image5 = (current_image5 - 1) % len(btn5_images)
-
 
                 elif okbtn_rect.collidepoint(mouse_pos):
                     print("okbtn clicked")
@@ -935,10 +887,8 @@ def game_screen(screen):
                             screen.blit(upgreen_glow,(1030,70))
                             pygame.display.flip()
                             image_blitted = True
-
                     else :
                         print("not defused")
-
                 elif musicdownbtn1_rect.collidepoint(mouse_pos):
                     print("music click")
                     # Increment the current image index
@@ -959,24 +909,18 @@ def game_screen(screen):
                 elif musicdownbtn5_rect.collidepoint(mouse_pos):
                     # Increment the current image index for btn5
                     musiccurrent_image5 = (musiccurrent_image5 + 1) % len(musicbtn5_images)
-
                     # Check if up button is clicked
                 elif musicupbtn1_rect.collidepoint(mouse_pos):
                     # decrement the current image index
                     musiccurrent_image1 = (musiccurrent_image1 - 1) % len(musicbtn1_images)
-
                 elif musicupbtn2_rect.collidepoint(mouse_pos):
                     musiccurrent_image2 = (musiccurrent_image2 - 1) % len(musicbtn2_images)
-
                 elif musicupbtn3_rect.collidepoint(mouse_pos):
                     musiccurrent_image3 = (musiccurrent_image3 - 1) % len(musicbtn3_images)
-
                 elif musicupbtn4_rect.collidepoint(mouse_pos):
                     musiccurrent_image4 = (musiccurrent_image4 - 1) % len(musicbtn4_images)
-
                 elif musicupbtn5_rect.collidepoint(mouse_pos):
                     musiccurrent_image5 = (musiccurrent_image5 - 1) % len(musicbtn5_images)
-
                 elif musicokbtn_rect.collidepoint(mouse_pos):
                     print("musicokbtn clicked")
                     if (musicbtn1_images[musiccurrent_image1] == musicbtn1_images[1] and
@@ -992,7 +936,6 @@ def game_screen(screen):
                             musicimage_blitted = True
                         else:
                             print("module defused")
-
                 elif click_me_rect.collidepoint(mouse_pos):
                     print("click me button clicked")
                     if (image_blitted == True and musicimage_blitted == True):
@@ -1003,11 +946,6 @@ def game_screen(screen):
                         game_completed()
                     else:
                         display_text_with_image_buttons()
-
-
-
-
-
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     if quit_button_rect.collidepoint(mouse_pos):
@@ -1028,20 +966,8 @@ def game_screen(screen):
         screen.blit(musicbtn4_images[musiccurrent_image4], musicbtn4_images_pos)
         screen.blit(musicbtn5_images[musiccurrent_image5], musicbtn5_images_pos)
 
-
-
-
-
     display_text_with_image_buttons()
     # Quit the game when countdown reaches 0
-
-
-
-
-
-
-
-
 
     # Wait for user input
     while True:
@@ -1062,7 +988,7 @@ def display_text_with_image_buttons():
     SCREEN_HEIGHT = infoObject.current_h
 
     # Set up the screen
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Simple Text Display")
 
     # Define colors
@@ -1109,10 +1035,7 @@ def display_text_with_image_buttons():
         screen.blit(image, image_rect)
         screen.blit(tryagain, tryagain_rect)
         screen.blit(menu, menu_rect)
-
         pygame.display.flip()
-
-
 
         # Event handling
         for event in pygame.event.get():
@@ -1124,13 +1047,10 @@ def display_text_with_image_buttons():
                 elif tryagain_rect.collidepoint(event.pos):
                     show_text_window()
 
-
         clock.tick(30)
 
     pygame.quit()
     sys.exit()
-
-
 
 
 def loading_screen():
@@ -1140,7 +1060,7 @@ def loading_screen():
     # Get screen dimensions
     SCREEN_WIDTH = pygame.display.Info().current_w
     SCREEN_HEIGHT = pygame.display.Info().current_h
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Loading")
 
     # Display loading text
@@ -1179,7 +1099,6 @@ def loading_screen():
     pygame.time.delay(int(remaining_duration * 1000))
 
 
-
 def game_completed():
     # Initialize Pygame
     pygame.init()
@@ -1187,7 +1106,7 @@ def game_completed():
     # Get screen dimensions
     SCREEN_WIDTH = pygame.display.Info().current_w
     SCREEN_HEIGHT = pygame.display.Info().current_h
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Centered Image")
 
     # Load image
@@ -1257,14 +1176,13 @@ def game_completed():
     sys.exit()
 
 
-
 def appendix1():
     # Get the screen width and height
     screen_info = pygame.display.Info()
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1310,7 +1228,6 @@ def appendix1():
             center=(button_x + button_width // 2, button_y + button_height // 2))
         screen.blit(button_text, button_text_rect)  # Blit the button text onto the button rectangle
 
-
         pygame.display.flip()
 
 
@@ -1320,7 +1237,7 @@ def intro():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1374,7 +1291,7 @@ def modoperands():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1431,7 +1348,7 @@ def letters_code():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1488,7 +1405,7 @@ def clickmebutton():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1545,7 +1462,7 @@ def wiretrap():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1617,7 +1534,7 @@ def wiretrap2():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1676,7 +1593,7 @@ def musicnode():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1731,7 +1648,7 @@ def appendix2():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
@@ -1780,58 +1697,58 @@ def appendix2():
         pygame.display.flip()
 
 def appendix3():
-            # Get the screen width and height
-            screen_info = pygame.display.Info()
-            SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
+    # Get the screen width and height
+    screen_info = pygame.display.Info()
+    SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
-            # Set up the screen in fullscreen mode
-            screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-            pygame.display.set_caption("Fullscreen Image")
+    # Set up the screen in fullscreen mode
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Fullscreen Image")
 
-            # Load the image
-            image = pygame.image.load("graphics/Appendix2.png")
+    # Load the image
+    image = pygame.image.load("graphics/Appendix2.png")
 
-            # Get the image rectangle
-            image_rect = image.get_rect()
+    # Get the image rectangle
+    image_rect = image.get_rect()
 
-            # Set the image position to the center of the screen
-            image_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+    # Set the image position to the center of the screen
+    image_rect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
 
-            # Define button properties
-            button_width = 20
-            button_height = 50
-            button_margin = 20
-            button_x = 20
-            button_y = 20
+    # Define button properties
+    button_width = 20
+    button_height = 50
+    button_margin = 20
+    button_x = 20
+    button_y = 20
 
-            # Create a font object
-            font = pygame.font.Font(None, 36)
+    # Create a font object
+    font = pygame.font.Font(None, 36)
 
-            # Main loop
-            running = True
-            while running:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running = False
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
-                        mouse_x, mouse_y = event.pos
-                        # Check if the mouse click is inside the button
-                        if button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height:
-                            return  # Exit the function to return to the fullscreen_with_buttons() function
+    # Main loop
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_x, mouse_y = event.pos
+                # Check if the mouse click is inside the button
+                if button_x <= mouse_x <= button_x + button_width and button_y <= mouse_y <= button_y + button_height:
+                    return  # Exit the function to return to the fullscreen_with_buttons() function
 
-                # Draw everything
-                screen.fill((255, 255, 255))  # Fill the screen with white color
-                screen.blit(image, image_rect)  # Blit the image onto the screen at the specified position
+        # Draw everything
+        screen.fill((255, 255, 255))  # Fill the screen with white color
+        screen.blit(image, image_rect)  # Blit the image onto the screen at the specified position
 
-                # Draw button
-                pygame.draw.rect(screen, (85, 85, 85),
-                                 (button_x, button_y, button_width, button_height))  # Grey button rectangle
-                button_text = font.render("<", True, (0, 0, 0))  # Black button text
-                button_text_rect = button_text.get_rect(
-                    center=(button_x + button_width // 2, button_y + button_height // 2))
-                screen.blit(button_text, button_text_rect)  # Blit the button text onto the button rectangle
+        # Draw button
+        pygame.draw.rect(screen, (85, 85, 85),
+                         (button_x, button_y, button_width, button_height))  # Grey button rectangle
+        button_text = font.render("<", True, (0, 0, 0))  # Black button text
+        button_text_rect = button_text.get_rect(
+            center=(button_x + button_width // 2, button_y + button_height // 2))
+        screen.blit(button_text, button_text_rect)  # Blit the button text onto the button rectangle
 
-                pygame.display.flip()
+        pygame.display.flip()
 
 def expert_gamescreen():
     # Initialize Pygame
@@ -1842,7 +1759,7 @@ def expert_gamescreen():
     SCREEN_WIDTH, SCREEN_HEIGHT = screen_info.current_w, screen_info.current_h
 
     # Set up the screen in fullscreen mode
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption("Fullscreen with Buttons")
 
     # Define colors
