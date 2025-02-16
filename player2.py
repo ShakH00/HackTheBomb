@@ -5,10 +5,18 @@ import threading
 import time
 import random
 from game_state import GameState
+from utility import read_puzzle_info
 
 # Initialize pygame
 pygame.init()
+
 game_state = GameState()
+
+def initialize_from_file():
+    if not game_state.load_puzzle_info():
+        print("Waiting for puzzle information file...")
+        return False
+    return True
 
 # Window settings
 WIDTH, HEIGHT = 1366, 768
@@ -171,6 +179,13 @@ def draw_wrapped_text(surface, text, rect, font, color):
 def main():
     global input_text, input_active, current_module, current_puzzle, puzzle_answer, answer_feedback, feedback_timer
 
+    # Wait for puzzle info file
+    while not initialize_from_file():
+        time.sleep(1)  # Wait a second before trying again
+        print("Retrying...")
+
+    print("Puzzle information loaded successfully!")
+
     try:
         client_socket.connect((HOST, PORT))
         print("Connected to Player 1")
@@ -226,7 +241,7 @@ def main():
             for i, button in enumerate(module_buttons):
                 if button.handle_event(event):
                     current_module = modules[i]
-                    current_puzzle = game_state.generate_puzzle(i)
+                    current_puzzle = game_state.get_puzzle(i)
                     puzzle_answer = ""
 
             # Handle quick messages
@@ -256,7 +271,7 @@ def main():
                     if current_puzzle and puzzle_answer == current_puzzle["answer"]:
                         answer_feedback = "Correct! Sending to defuser..."
                         send_message(f"SOLUTION: {puzzle_answer}")
-                        current_puzzle = game_state.generate_puzzle()
+                        current_puzzle = game_state.get_puzzle(modules.index(current_module))
                     else:
                         answer_feedback = "Incorrect! Try again."
                     feedback_timer = time.time() + 2

@@ -1,0 +1,3 @@
+WIRE:red
+SYMBOLS:!,&,;,%
+CODE:5666
