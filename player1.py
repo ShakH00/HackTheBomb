@@ -160,6 +160,11 @@ while running:
     instruction_text = font.render(received_message, True, BLACK)
     screen.blit(instruction_text, (50, 100))
 
+    # Draw the "explode" circle button in the top-right corner
+    explode_button = pygame.draw.circle(screen, RED, (WIDTH - 230, 230), 150)
+    explode_text = font.render("DETONATE", True, BLACK)
+    screen.blit(explode_text, (WIDTH - 320, 210))
+
     # Draw Wonky Wires
     mouse_on_wire = False
     for wire in wires:
@@ -276,6 +281,16 @@ while running:
                             print("Incorrect Keypad Entry! Resetting...")
                             bomb_timer -= 90
                             pressed_symbols = []
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if explode_button.collidepoint(event.pos):
+                    pygame.mouse.set_visible(True)
+                    screen.fill(RED)
+                    defused_text = big_font.render("BOOM! You triggered the bomb!", True, WHITE)
+                    screen.blit(defused_text, (WIDTH // 2 - 350, HEIGHT // 2 - 50))
+                    pygame.display.flip()
+                    pygame.time.delay(3000)  # Pause for 3 seconds
+                    running = False  # End game (Bomb explodes)
 
             # Keypad entering
             if input_box.collidepoint(event.pos):
