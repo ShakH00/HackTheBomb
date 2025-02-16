@@ -43,6 +43,12 @@ def main_screen():
         screen.blit(expert, expert_rect.topleft)
         screen.blit(defuser, defuser_rect.topleft)
 
+        # Change mouse cursor on hover
+        if defuser_rect.collidepoint(pygame.mouse.get_pos()) or expert_rect.collidepoint(pygame.mouse.get_pos()):
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+        else:
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+
         # Event handler
         for event in pygame.event.get():
             if event.type == QUIT:
