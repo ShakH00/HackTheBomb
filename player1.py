@@ -122,12 +122,10 @@ wires = [
 ]
 
 wire_colors = ["red", "green", "blue"]
-print(game_state.correct_wire)
 
 # Symbol Keypad Module
 symbols = ["%", "!", ";", "&"]
 symbol_positions = [(100, 500), (200, 500), (300, 500), (400, 500)]
-print(game_state.correct_symbol_order)
 pressed_symbols = []
 symbols_completed = False
 

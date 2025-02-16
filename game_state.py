@@ -32,10 +32,10 @@ class GameState:
              "question": f"Decrypt: {encrypted_wire}, using A -> {encrypted_hint}",
              "answer": self.correct_wire},
             {"type": "symbol",
-             "question": f"Enter the correct symbol order: %, !, ;, &, using only these clues \n {symbol_clues}",
+             "question": f"Enter the correct symbol order: %, !, ;, &, using only these clues -> {symbol_clues}",
              "answer": "".join(self.correct_symbol_order)},
             {"type": "code",
-             "question": f"Crack the bomb code:\n {math_equations}",
+             "question": f"Crack the bomb code: -> {math_equations}",
              "answer": self.bomb_number_code}
         ]
 
