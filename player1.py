@@ -49,7 +49,7 @@ for i in range(10):
 # Timer
 bomb_timer = 300  # 5-minute countdown
 start_time = time.time()
-
+time_reduced = False
 
 # Wire Module (Wonky wires)
 def generate_wonky_wire(start_x, start_y, length, color, wire_id):
@@ -109,6 +109,9 @@ def receive_data():
 # Start networking thread
 threading.Thread(target=receive_data, daemon=True).start()
 
+# Keypad clicked state
+keypad_active = False
+
 # Input box state
 input_active = False
 
@@ -126,8 +129,8 @@ while running:
     bomb_inner = pygame.draw.rect(screen, (115, 107, 72), (60, 60, 1246, 648))
 
     # Draw box for clock
-    clock_outer = pygame.draw.rect(screen, (255, 0, 0), ((WIDTH / 2) - 100, 300, 197, 80))
-    clock_inner = pygame.draw.rect(screen, (0, 0, 0), ((WIDTH / 2) - 95, 305, 187, 70))
+    clock_outer = pygame.draw.rect(screen, RED, ((WIDTH / 2) - 100, 300, 197, 80))
+    clock_inner = pygame.draw.rect(screen, BLACK, ((WIDTH / 2) - 95, 305, 187, 70))
 
     # Calculate remaining time
     elapsed_time = time.time() - start_time
@@ -147,7 +150,7 @@ while running:
     screen.blit(digit_images[sec_tens], ((WIDTH / 2), 310))
     screen.blit(digit_images[sec_ones], ((WIDTH / 2) + 43, 310))
 
-    if remaining_time == 0:
+    if remaining_time <= 0:
         pygame.mouse.set_visible(True)
         screen.fill(RED)
         defused_text = big_font.render("BOOM! You didn't defuse the bomb in time!", True, WHITE)
@@ -194,14 +197,18 @@ while running:
         text = font.render(symbol, True, BLACK)
         screen.blit(text, (symbol_positions[idx][0] + 15, symbol_positions[idx][1] + 15))
 
+    if symbols_completed:
+        for idx, symbol in enumerate(symbols):
+            pygame.draw.rect(screen, GREEN, (symbol_positions[idx][0], symbol_positions[idx][1], 75, 75))
+            text = font.render(symbol, True, BLACK)
+            screen.blit(text, (symbol_positions[idx][0] + 15, symbol_positions[idx][1] + 15))
+
     # Draw Number Code Area
     bomb_code_text = font.render(f"Input Code:", True, BLUE)
     screen.blit(bomb_code_text, (1000, 250))
 
     # Draw input box for number entry
     input_box = pygame.draw.rect(screen, GRAY if input_active else DARK_GRAY, (990, 300, 200, 60))
-    if code_correct:
-        pygame.draw.rect(screen, GREEN, (990, 300, 200, 60))
     pygame.draw.rect(screen, WHITE, (990, 300, 200, 60), 3)
     input_text = font.render(player_input_code, True, WHITE)
     screen.blit(input_text, (1000, 310))
@@ -211,6 +218,17 @@ while running:
     pygame.draw.rect(screen, BLUE, submit_button)
     submit_text = font.render("Submit", True, WHITE)
     screen.blit(submit_text, (submit_button.x + 45, submit_button.y + 10))
+
+    if code_correct:
+        pygame.draw.rect(screen, GREEN, (990, 370, 200, 50))
+        screen.blit(submit_text, (submit_button.x + 45, submit_button.y + 10))
+
+    # if time_reduced:
+    #     clock_outer = pygame.draw.rect(screen, BLACK, ((WIDTH / 2) - 100, 300, 197, 80))
+    #     clock_inner = pygame.draw.rect(screen, RED, ((WIDTH / 2) - 95, 305, 187, 70))
+    #     time.sleep(1)
+    #     clock_outer = pygame.draw.rect(screen, RED, ((WIDTH / 2) - 100, 300, 197, 80))
+    #     clock_inner = pygame.draw.rect(screen, BLACK, ((WIDTH / 2) - 95, 305, 187, 70))
 
     # Event Handling
     for event in pygame.event.get():
@@ -259,6 +277,7 @@ while running:
                             symbols_completed = True
                         else:
                             print("Incorrect Keypad Entry! Resetting...")
+                            bomb_timer -= 90
                             pressed_symbols = []
 
             # Keypad entering
@@ -273,14 +292,29 @@ while running:
                         print("Correct Code Entered!")
                         code_correct = True
                     else:
-                        print("Wrong Code! Try Again.")
+                        pygame.mouse.set_visible(True)
+                        screen.fill(RED)
+                        defused_text = big_font.render("BOOM! You put the wrong code!", True, BLACK)
+                        screen.blit(defused_text, (WIDTH // 2 - 450, HEIGHT // 2 - 50))
+                        pygame.display.flip()
+                        pygame.time.delay(3000)  # Pause for 3 seconds
+                        running = False  # End game (Bomb explodes)
                     player_input_code = ""
 
         elif event.type == pygame.KEYDOWN and input_active:
-            if event.key == pygame.K_BACKSPACE:
-                player_input_code = player_input_code[:-1]
-            elif event.unicode.isdigit() and len(player_input_code) < 4:
-                player_input_code += event.unicode
+            if input_active:
+                if event.key == pygame.K_BACKSPACE:
+                    player_input_code = player_input_code[:-1]
+                elif event.unicode.isdigit() and len(player_input_code) < 4:
+                    player_input_code += event.unicode
+                elif event.key == pygame.K_RETURN:  # Pressing Enter submits the code
+                    if len(player_input_code) == 4:
+                        if player_input_code == bomb_number_code:
+                            print("Correct Code Entered!")
+                            code_correct = True
+                        else:
+                            print("Wrong Code! Try Again.")
+                        player_input_code = ""
 
     # Check if all tasks are completed
     if correct_wire_bool and symbols_completed and code_correct:
@@ -288,6 +322,7 @@ while running:
 
     # Display Bomb Defused Message
     if bomb_defused:
+        pygame.mouse.set_visible(True)
         screen.fill(GREEN_BRIGHT)
         defused_text = big_font.render("BOMB DEFUSED!", True, BLACK)
         screen.blit(defused_text, (WIDTH // 2 - 200, HEIGHT // 2 - 50))
