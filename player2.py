@@ -1,3 +1,5 @@
+import os
+
 import pygame
 import sys
 import socket
@@ -17,25 +19,46 @@ def initialize_from_file():
         return False
     return True
 
-# Window settings
-WIDTH, HEIGHT = 1366, 768
+# Set the screen dimensions and create the screen object
+WIDTH = 1366
+HEIGHT = 768
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Bomb Defusal - Player 2 (Expert)")
+pygame.display.set_caption("HackTheBomb | Player 2 (Bomb Expert)")
+icon = pygame.image.load("graphics/icon.png")
+pygame.display.set_icon(icon)
 
 # Terminal style Colors
-BLACK      = (0, 0, 0)
-DARK_GRAY  = (30, 30, 30)
-GREEN      = (0, 255, 0)
+BLACK = (0, 0, 0)
+DARK_GRAY = (30, 30, 30)
+GREEN = (0, 255, 0)
 DARK_GREEN = (0, 150, 0)
-RED        = (255, 50, 50)
+RED = (255, 50, 50)
+
 # When a button is hovered, use a slightly lighter gray:
 LIGHT_GRAY = (100, 100, 100)
-WHITE      = (255, 255, 255)  # (not used extensively)
+WHITE = (255, 255, 255)
 
-# Monospaced Fonts (using Consolas if available)
-font       = pygame.font.Font(pygame.font.match_font("consolas"), 28)
-title_font = pygame.font.Font(pygame.font.match_font("consolas"), 40)
-small_font = pygame.font.Font(pygame.font.match_font("consolas"), 20)
+# Monospaced Fonts
+font = pygame.font.Font(pygame.font.match_font("consolas"), 24)
+title_font = pygame.font.Font(pygame.font.match_font("consolas"), 36)
+small_font = pygame.font.Font(pygame.font.match_font("consolas"), 16)
+
+# Load timer
+timer_background = pygame.image.load("graphics/timer_background.png")
+timer_background = pygame.transform.scale(timer_background, (300, 165))
+
+# Load countdown digit images (0-9)
+digit_images = []
+for i in range(10):
+    image_path = os.path.join("graphics/numbers", f"0{i}.png")
+    image = pygame.image.load(image_path)
+    image = pygame.transform.scale(image, (50, 68))  # Adjust image size here
+    digit_images.append(image)
+
+# Timer
+bomb_timer = 300  # 5-minute countdown
+start_time = time.time()
+time_reduced = False
 
 # Network Setup
 HOST = "localhost"
@@ -43,15 +66,29 @@ PORT = 5555
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Module states and information
-current_module = "wires"
+current_module = "tutorial"
 modules = ["wires", "symbols", "code"]
 message_to_send = ""
 
 # Detailed manual pages with puzzle mechanics
 manual_pages = {
+    "tutorial": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "                   Welcome to the console",
+    ],
     "wires": [
         "Wire Module Instructions:",
-        "1. You will receive an encrypted wire color using Caesar cipher",
+        "1. You will get an encrypted wire color using a Caesar cipher",
         "2. Use the provided encrypted 'A' to determine the shift",
         "3. Possible wire colors: red, blue, green",
         "4. The defuser must cut the correct wire first",
@@ -110,27 +147,28 @@ class Button:
                 return True
         return False
 
+
 # Create buttons for different modules
 module_buttons = [
-    Button(50, 50, 200, 50, "Wires Module"),
-    Button(50, 120, 200, 50, "Symbols Module"),
-    Button(50, 190, 200, 50, "Code Module")
+    Button(50, 50, 215, 50, "Wires Module"),
+    Button(50, 120, 215, 50, "Symbols Module"),
+    Button(50, 190, 215, 50, "Code Module")
 ]
 
 # Quick message buttons with more specific instructions
 quick_messages = [
-    Button(300, 50, 400, 50, "WAIT! Don't cut any wires yet!"),
-    Button(300, 120, 400, 50, "Solve equations one at a time"),
-    Button(300, 190, 400, 50, "Remember symbol order carefully"),
-    Button(300, 260, 400, 50, "Double-check before proceeding")
+    Button(300, 50, 415, 50, "WAIT! Don't cut any wires yet!"),
+    Button(300, 120, 415, 50, "Solve equations one at a time"),
+    Button(300, 190, 415, 50, "Remember symbol order carefully"),
+    Button(300, 260, 415, 50, "Double-check before proceeding")
 ]
 
 # Puzzle display area
-puzzle_rect = pygame.Rect(50, 330, 650, 200)
+puzzle_rect = pygame.Rect(50, 330, 665, 200)
 answer_rect = pygame.Rect(50, 540, 400, 40)
 submit_button = Button(460, 540, 100, 40, "Submit")
 
-# Custom message input (kept from original functionality)
+# Custom message input
 input_rect = pygame.Rect(50, HEIGHT - 100, 400, 40)
 send_button = Button(460, HEIGHT - 100, 100, 40, "Send")
 input_text = ""
@@ -193,25 +231,49 @@ def main():
         # Terminal background
         screen.fill(BLACK)
 
+        # Timer background
+        timer_rect = timer_background.get_rect(center=(WIDTH - 1000, 670))
+        screen.blit(timer_background, timer_rect.topleft)
+
+        # Calculate remaining time
+        elapsed_time = time.time() - start_time
+        remaining_time = max(0, bomb_timer - int(elapsed_time))
+        minutes = remaining_time // 60
+        seconds = remaining_time % 60
+
+        # Split digits for minutes and seconds
+        min_tens = minutes // 10
+        min_ones = minutes % 10
+        sec_tens = seconds // 10
+        sec_ones = seconds % 10
+
+        # Back color rect
+        timer_back_rect = pygame.draw.rect(screen, (16, 79, 51), (220, 610, 280, 85))
+
+        # Draw countdown timer using images
+        screen.blit(digit_images[min_tens], ((WIDTH / 2) - 415, 615))
+        screen.blit(digit_images[min_ones], ((WIDTH / 2) - 365, 615))
+        screen.blit(digit_images[sec_tens], ((WIDTH / 2) - 310, 615))
+        screen.blit(digit_images[sec_ones], ((WIDTH / 2) - 260, 615))
+
         # Draw title in terminal style (centered green text)
-        title = title_font.render("Bomb Defusal Expert Console", True, GREEN)
+        title = title_font.render("Bomb Defusal Console", True, GREEN)
         screen.blit(title, (WIDTH // 2 - title.get_width() // 2, 10))
 
-        # Draw buttons (module_buttons and quick_messages)
+        # Draw all buttons
         for button in module_buttons + quick_messages:
             button.draw(screen)
 
-        # Draw current module manual in a terminal-style panel
-        manual_rect = pygame.Rect(700, 50, 600, HEIGHT - 100)
+        # Draw current module manual
+        manual_rect = pygame.Rect(740, 50, 580, HEIGHT - 100)
         pygame.draw.rect(screen, DARK_GRAY, manual_rect)
         pygame.draw.rect(screen, GREEN, manual_rect, 2)
         if current_module in manual_pages:
             for i, line in enumerate(manual_pages[current_module]):
                 text = small_font.render(line, True, GREEN)
-                screen.blit(text, (710, 60 + i * 25))
+                screen.blit(text, (760, 60 + i * 25))
 
-        # Draw puzzle area in terminal style
-        pygame.draw.rect(screen, DARK_GRAY, puzzle_rect)
+        # Draw puzzle area
         pygame.draw.rect(screen, GREEN, puzzle_rect, 2)
         if current_puzzle:
             draw_wrapped_text(screen, current_puzzle["question"], puzzle_rect, font, GREEN)
