@@ -11,10 +11,10 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Wire Puzzle")
 
 # Load images
-red_wire_uncut = pygame.image.load("redwire.png")
-red_wire_cut = pygame.image.load("redwirecutted.png")
-blue_wire_uncut = pygame.image.load("bluewire.png")
-blue_wire_cut = pygame.image.load("bluewirecutted.png")
+red_wire_uncut = pygame.image.load("graphics/redwire.png")
+red_wire_cut = pygame.image.load("graphics/redwirecutted.png")
+blue_wire_uncut = pygame.image.load("graphics/bluewire.png")
+blue_wire_cut = pygame.image.load("graphics/bluewirecutted.png")
 
 # Scale images
 red_wire_uncut = pygame.transform.scale(red_wire_uncut, (50, 300))

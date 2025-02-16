@@ -35,10 +35,10 @@ def show_text_window():
     time.sleep(1)
 
     # Load and scale the additional images
-    image1 = pygame.image.load("phone.jpg").convert_alpha()
+    image1 = pygame.image.load("graphics/phone.jpg").convert_alpha()
     image1 = pygame.transform.scale(image1, (300, 300))  # Adjust size as needed
 
-    image2 = pygame.image.load("mesg.png").convert_alpha()
+    image2 = pygame.image.load("graphics/mesg.png").convert_alpha()
     image2 = pygame.transform.scale(image2, (400, 300))  # Adjust size as needed
 
     for alpha in range(0, 255, 5):  # Increase transparency gradually

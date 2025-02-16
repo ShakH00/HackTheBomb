@@ -32,7 +32,7 @@ def run_game():
     child_screen2.fill((0, 0, 0, 0))  # Transparent black color
 
     # Load the background image
-    background_image = pygame.image.load("Untitled.jpeg").convert()
+    background_image = pygame.image.load("graphics/Untitled.jpeg").convert()
 
     # Function to update child window positions
     def update_child_positions():
@@ -53,7 +53,7 @@ def run_game():
     # Function to add image and button to child screen
     def add_content_to_child_screen(child_screen):
         # Add image to child screen
-        image = pygame.image.load("hero logo.jpg").convert_alpha()  # Load your image with alpha channel
+        image = pygame.image.load("graphics/hero logo.jpg").convert_alpha()  # Load your image with alpha channel
         image = pygame.transform.scale(image, (450, 450))  # Scale the image as needed
         child_screen.blit(image, (120, 100))  # Adjust position as needed
 
@@ -62,7 +62,7 @@ def run_game():
 
         # If this is the second child screen, add content specific to it
         if child_screen == child_screen2:
-            image1 = pygame.image.load("Expertlogo.jpg").convert_alpha()  # Load your image with alpha channel
+            image1 = pygame.image.load("graphics/Expertlogo.jpg").convert_alpha()  # Load your image with alpha channel
             image1 = pygame.transform.scale(image1, (450, 450))  # Scale the image as needed
             child_screen.blit(image1, (130, 100))  # Adjust position as needed
 
@@ -85,9 +85,9 @@ def run_game():
 
         # Load instruction images
         instruction_images = [
-            pygame.image.load("first_image.jpg").convert(),  # Load the first image
-            pygame.image.load("second_image.jpg").convert(),
-            pygame.image.load("third_image.jpg").convert()
+            pygame.image.load("graphics/first_image.jpg").convert(),  # Load the first image
+            pygame.image.load("graphics/second_image.jpg").convert(),
+            pygame.image.load("graphics/third_image.jpg").convert()
         ]
         current_page = 0  # Index of the current instruction page
 
@@ -97,8 +97,8 @@ def run_game():
         instruction_images[2] = pygame.transform.scale(instruction_images[2], screen.get_size())
 
         # Load navigation buttons
-        next_button = pygame.image.load("next_button.png").convert_alpha()
-        back_button = pygame.image.load("back_button.png").convert_alpha()
+        next_button = pygame.image.load("graphics/next_button.png").convert_alpha()
+        back_button = pygame.image.load("graphics/back_button.png").convert_alpha()
 
         # Calculate button positions
         button_margin = 20
@@ -293,10 +293,10 @@ def show_text_window():
     time.sleep(1)
 
     # Load and scale the additional images
-    image1 = pygame.image.load("phone.jpg").convert_alpha()
+    image1 = pygame.image.load("graphics/phone.jpg").convert_alpha()
     image1 = pygame.transform.scale(image1, (300, 300))  # Adjust size as needed
 
-    image2 = pygame.image.load("mesg.png").convert_alpha()
+    image2 = pygame.image.load("graphics/mesg.png").convert_alpha()
     image2 = pygame.transform.scale(image2, (400, 300))  # Adjust size as needed
 
     for alpha in range(0, 255, 5):  # Increase transparency gradually
@@ -361,7 +361,7 @@ def game_screen(screen):
     # Fill the screen with orange color
     screen.fill(orange)
 
-    paint = pygame.image.load("oldpaint.png")
+    paint = pygame.image.load("graphics/oldpaint.png")
     paint_rect = paint.get_rect()
     paint = pygame.transform.scale(paint, (50,100))
     paint_position = [(0,100),(0,300),(0,500),(0,700),(1550,100),(1550,300),(1550,500),(1550,700)]
@@ -377,24 +377,24 @@ def game_screen(screen):
     pygame.draw.rect(screen, black, main_rect, border_radius=30)
 
     # Load bomb image and scale it to fit within the main window
-    bomb_bg = pygame.image.load("bomb.jpg")
+    bomb_bg = pygame.image.load("graphics/bomb.jpg")
     bomb_bg_rect = bomb_bg.get_rect()
     bomb_bg_rect = (45, 63, screen.get_width() - 70, screen.get_height() - 90)
     bomb_bg = pygame.transform.scale(bomb_bg, (screen.get_width() - 90, screen.get_height() - 130))
 
 
-    explosive = pygame.image.load("explosive1.png")
+    explosive = pygame.image.load("graphics/explosive1.png")
     explosive_rect = explosive.get_rect()
     explosive_rect = (930,560,screen.get_width() - 50,screen.get_height() - 95)
     explosive = pygame.transform.scale(explosive,(480,180))
 
-    red_glow = pygame.image.load("down red light.png")
+    red_glow = pygame.image.load("graphics/down red light.png")
     red_glow_rect = red_glow.get_rect()
     #red_glow_rect = (60,510,screen.get_width()-1000,screen.get_height()-800)
     red_glow = pygame.transform.scale(red_glow,(480,100))
     glowdown_position = [(60,510),(550,510),(1030,510)]
 
-    battery = pygame.image.load("battery.png")
+    battery = pygame.image.load("graphics/battery.png")
     battery_rect = battery.get_rect()
     battery_rect = (330, 560, screen.get_width() - 50, screen.get_height() - 95)
     battery = pygame.transform.scale(battery, (280, 200))
@@ -411,9 +411,9 @@ def game_screen(screen):
         screen.blit(red_glow,red_glow_rect)
 
     glow_images = [
-        pygame.image.load("up red light.png").convert_alpha(),
-        pygame.image.load("up red light.png").convert_alpha(),
-        pygame.image.load("up red light.png").convert_alpha()
+        pygame.image.load("graphics/up red light.png").convert_alpha(),
+        pygame.image.load("graphics/up red light.png").convert_alpha(),
+        pygame.image.load("graphics/up red light.png").convert_alpha()
     ]
 
     glow_images = [pygame.transform.scale(img1, (480 , 100)) for img1 in glow_images]
@@ -428,133 +428,133 @@ def game_screen(screen):
     puzzle_height = (bomb_bg_rect[3] - 40) // 2  # Set the height to half of the bomb image's height
 
     #load image for wire module
-    emptywire = pygame.image.load("emptyleft.png")
+    emptywire = pygame.image.load("graphics/emptyleft.png")
     emptywire_rect = emptywire.get_rect()
     emptywire_rect = (630, 200, puzzle_width - 50, puzzle_height - 95)
     emptywire = pygame.transform.scale(emptywire, (50, 300))
 
-    wire1 = pygame.image.load("redwire.png")
+    wire1 = pygame.image.load("graphics/redwire.png")
     wire1_rect = wire1.get_rect()
     wire1_rect = (680, 200, puzzle_width - 50, puzzle_height - 95)
     wire1 = pygame.transform.scale(wire1, (50, 300))
 
-    wire2 = pygame.image.load("bluewire.png")
+    wire2 = pygame.image.load("graphics/bluewire.png")
     wire2_rect = wire2.get_rect()
     wire2_rect = (730, 200, puzzle_width - 50, puzzle_height - 95)
     wire2 = pygame.transform.scale(wire2, (50, 300))
 
-    wire3 = pygame.image.load("greenwire.png")
+    wire3 = pygame.image.load("graphics/greenwire.png")
     wire3_rect = wire3.get_rect()
     wire3_rect = (780, 200, puzzle_width - 50, puzzle_height - 95)
     wire3 = pygame.transform.scale(wire3, (50, 300))
 
-    wire4 = pygame.image.load("bluewire.png")
+    wire4 = pygame.image.load("graphics/bluewire.png")
     wire4_rect = wire4.get_rect()
     wire4_rect = (830, 200, puzzle_width - 50, puzzle_height - 95)
     wire4 = pygame.transform.scale(wire4, (50, 300))
 
-    emptywire1 = pygame.image.load("emptyright.png")
+    emptywire1 = pygame.image.load("graphics/emptyright.png")
     emptywire1_rect = emptywire1.get_rect()
     emptywire1_rect = (880, 200, puzzle_width - 50, puzzle_height - 95)
     emptywire1 = pygame.transform.scale(emptywire1, (50, 300))
 
     #load image for clickme btn module
-    click_me = pygame.image.load("clickmebtn.png")
+    click_me = pygame.image.load("graphics/clickmebtn.png")
     click_me_rect = click_me.get_rect()
     click_me_rect = (130, 200, puzzle_width - 50, puzzle_height - 95)
     click_me = pygame.transform.scale(click_me, (300, 300))
 
     #timer container
-    timerdis = pygame.image.load("timerdisplay.png")
+    timerdis = pygame.image.load("graphics/timerdisplay.png")
     timerdis_rect = timerdis.get_rect()
     timerdis_rect = (600, 550, puzzle_width - 50, puzzle_height - 95)
     timerdis = pygame.transform.scale(timerdis, (350, 250))
 
     #load images for 5 letter code module
-    codenum = pygame.image.load("number.png")
+    codenum = pygame.image.load("graphics/number.png")
     codenum_rect = codenum.get_rect()
     codenum_rect = (1120,160,puzzle_width - 50, puzzle_height - 95)
     codenum = pygame.transform.scale(codenum,(200,30))
 
-    upbtn1 = pygame.image.load("up_button.png")
+    upbtn1 = pygame.image.load("graphics/up_button.png")
     upbtn1_rect = upbtn1.get_rect()
     upbtn1_rect = (1100,220,puzzle_width - 50, puzzle_height - 95)
     upbtn1 = pygame.transform.scale(upbtn1,(50,50))
 
-    upbtn2 = pygame.image.load("up_button.png")
+    upbtn2 = pygame.image.load("graphics/up_button.png")
     upbtn2_rect = upbtn2.get_rect()
     upbtn2_rect = (1150, 220, puzzle_width - 50, puzzle_height - 95)
     upbtn2 = pygame.transform.scale(upbtn2, (50, 50))
 
-    upbtn3 = pygame.image.load("up_button.png")
+    upbtn3 = pygame.image.load("graphics/up_button.png")
     upbtn3_rect = upbtn3.get_rect()
     upbtn3_rect = (1200, 220, puzzle_width - 50, puzzle_height - 95)
     upbtn3 = pygame.transform.scale(upbtn3, (50, 50))
 
-    upbtn4 = pygame.image.load("up_button.png")
+    upbtn4 = pygame.image.load("graphics/up_button.png")
     upbtn4_rect = upbtn4.get_rect()
     upbtn4_rect = (1250, 220, puzzle_width - 50, puzzle_height - 95)
     upbtn4 = pygame.transform.scale(upbtn4, (50, 50))
 
-    upbtn5 = pygame.image.load("up_button.png")
+    upbtn5 = pygame.image.load("graphics/up_button.png")
     upbtn5_rect = upbtn5.get_rect()
     upbtn5_rect = (1300, 220, puzzle_width - 50, puzzle_height - 95)
     upbtn5 = pygame.transform.scale(upbtn5, (50, 50))
 
 
     #downbutton
-    downbtn1 = pygame.image.load("down_button.png")
+    downbtn1 = pygame.image.load("graphics/down_button.png")
     downbtn1_rect = downbtn1.get_rect()
     downbtn1_rect = (1100, 420, puzzle_width - 50, puzzle_height - 95)
     downbtn1 = pygame.transform.scale(downbtn1, (50, 50))
 
-    downbtn2 = pygame.image.load("down_button.png")
+    downbtn2 = pygame.image.load("graphics/down_button.png")
     downbtn2_rect = downbtn2.get_rect()
     downbtn2_rect = (1150, 420, puzzle_width - 50, puzzle_height - 95)
     downbtn2 = pygame.transform.scale(downbtn2, (50, 50))
 
-    downbtn3 = pygame.image.load("down_button.png")
+    downbtn3 = pygame.image.load("graphics/down_button.png")
     downbtn3_rect = downbtn3.get_rect()
     downbtn3_rect = (1200, 420, puzzle_width - 50, puzzle_height - 95)
     downbtn3 = pygame.transform.scale(downbtn3, (50, 50))
 
-    downbtn4 = pygame.image.load("down_button.png")
+    downbtn4 = pygame.image.load("graphics/down_button.png")
     downbtn4_rect = downbtn4.get_rect()
     downbtn4_rect = (1250, 420, puzzle_width - 50, puzzle_height - 95)
     downbtn4 = pygame.transform.scale(downbtn4, (50, 50))
 
-    downbtn5 = pygame.image.load("down_button.png")
+    downbtn5 = pygame.image.load("graphics/down_button.png")
     downbtn5_rect = downbtn5.get_rect()
     downbtn5_rect = (1300, 420, puzzle_width - 50, puzzle_height - 95)
     downbtn5 = pygame.transform.scale(downbtn5, (50, 50))
 
-    okbtn = pygame.image.load("ok_button.png")
+    okbtn = pygame.image.load("graphics/ok_button.png")
     okbtn_rect = downbtn5.get_rect()
     okbtn_rect = (1400, 320, puzzle_width - 50, puzzle_height - 95)
     okbtn = pygame.transform.scale(okbtn, (70, 70))
 
     btn1_images = [
-        pygame.image.load("code_displayA.png").convert(),  # Load the first image
+        pygame.image.load("graphics/code_displayA.png").convert(),  # Load the first image
 
     ]
 
     btn2_images = [
-        pygame.image.load("code_displayM.png").convert(),  # Load the first image
+        pygame.image.load("graphics/code_displayM.png").convert(),  # Load the first image
 
     ]
 
     btn3_images = [
-        pygame.image.load("code_displayR.png").convert(),  # Load the first image
+        pygame.image.load("graphics/code_displayR.png").convert(),  # Load the first image
 
     ]
 
     btn4_images = [
-        pygame.image.load("code_displayB.png").convert(),  # Load the first image
+        pygame.image.load("graphics/code_displayB.png").convert(),  # Load the first image
 
     ]
 
     btn5_images = [
-        pygame.image.load("code_displayE.png").convert(),  # Load the first image
+        pygame.image.load("graphics/code_displayE.png").convert(),  # Load the first image
 
     ]
 
@@ -600,9 +600,9 @@ def game_screen(screen):
 
     # Load puzzle images
     puzzle_images = [
-        pygame.image.load("motherboard.jpg").convert_alpha(),
-        pygame.image.load("motherboard.jpg").convert_alpha(),
-        pygame.image.load("motherboard.jpg").convert_alpha()
+        pygame.image.load("graphics/motherboard.jpg").convert_alpha(),
+        pygame.image.load("graphics/motherboard.jpg").convert_alpha(),
+        pygame.image.load("graphics/motherboard.jpg").convert_alpha()
     ]
 
     # Scale puzzle images to fit within puzzle windows
@@ -757,7 +757,7 @@ def appendix1():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("bomb_fundamental.png")
+    image = pygame.image.load("graphics/bomb_fundamental.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -811,7 +811,7 @@ def intro():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("expert_intro.png")
+    image = pygame.image.load("graphics/expert_intro.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -865,7 +865,7 @@ def modoperands():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("modoperands.png")
+    image = pygame.image.load("graphics/modoperands.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -922,7 +922,7 @@ def letters_code():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("module_5_letter.png")
+    image = pygame.image.load("graphics/module_5_letter.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -979,7 +979,7 @@ def clickmebutton():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("Clickme.png")
+    image = pygame.image.load("graphics/Clickme.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -1036,7 +1036,7 @@ def wiretrap():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("wire_table1.png")
+    image = pygame.image.load("graphics/wire_table1.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -1108,7 +1108,7 @@ def wiretrap2():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("wirtetable2.jpg")
+    image = pygame.image.load("graphics/wirtetable2.jpg")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -1167,7 +1167,7 @@ def musicnode():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("musicnode.png")
+    image = pygame.image.load("graphics/musicnode.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -1222,7 +1222,7 @@ def appendix2():
     pygame.display.set_caption("Fullscreen Image")
 
     # Load the image
-    image = pygame.image.load("bomb_manual.png")
+    image = pygame.image.load("graphics/bomb_manual.png")
 
     # Get the image rectangle
     image_rect = image.get_rect()
@@ -1276,7 +1276,7 @@ def appendix3():
             pygame.display.set_caption("Fullscreen Image")
 
             # Load the image
-            image = pygame.image.load("Appendix2.png")
+            image = pygame.image.load("graphics/Appendix2.png")
 
             # Get the image rectangle
             image_rect = image.get_rect()
@@ -1361,10 +1361,10 @@ def expert_gamescreen():
     appendix1_y = (SCREEN_HEIGHT - (2 * button_height + button_margin)) // 1.2
 
     # Load the image
-    flogo = pygame.image.load("5_letter_logo.jpg")
-    slogo = pygame.image.load("ClickMe_logo.jpg")
-    tlogo = pygame.image.load("wire_logo.jpg")
-    fourlogo = pygame.image.load("music_logo.jpg")
+    flogo = pygame.image.load("graphics/5_letter_logo.jpg")
+    slogo = pygame.image.load("graphics/ClickMe_logo.jpg")
+    tlogo = pygame.image.load("graphics/wire_logo.jpg")
+    fourlogo = pygame.image.load("graphics/music_logo.jpg")
 
     # Define the position and size of the image
     letter_logo_width = 250  # Adjust as needed

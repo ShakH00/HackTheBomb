@@ -13,7 +13,7 @@ def game_completed():
     pygame.display.set_caption("Centered Image")
 
     # Load image
-    image = pygame.image.load("newspaper_completed.jpg")
+    image = pygame.image.load("graphics/newspaper_completed.jpg")
     image.set_alpha(0)  # Set initial transparency level to fully transparent
 
     # Get image dimensions
