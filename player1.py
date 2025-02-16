@@ -55,6 +55,24 @@ detonator_img = pygame.transform.scale(detonator_img, (250, 250))
 timer_background = pygame.image.load("graphics/timer_background.png")
 timer_background = pygame.transform.scale(timer_background, (300, 165))
 
+red_wire = pygame.image.load("graphics/redwire.png")
+red_wire = pygame.transform.scale(red_wire, (200, 30))
+
+red_wire_cut = pygame.image.load("graphics/redwirecutted.png")
+red_wire_cut = pygame.transform.scale(red_wire_cut, (200, 30))
+
+blue_wire = pygame.image.load("graphics/bluewire.png")
+blue_wire = pygame.transform.scale(blue_wire, (200,30))
+
+blue_wire_cut = pygame.image.load("graphics/bluewirecutted.png")
+blue_wire_cut = pygame.transform.scale(blue_wire_cut, (200, 30))
+
+green_wire = pygame.image.load("graphics/greenwire.png")
+green_wire = pygame.transform.scale(green_wire, (200,30))
+
+green_wire_cut = pygame.image.load("graphics/greenwirecutted.png")
+green_wire_cut = pygame.transform.scale(green_wire_cut, (200,30))
+
 battery = pygame.image.load("graphics/battery.png")
 battery = pygame.transform.scale(battery, (120, 105))
 
@@ -142,7 +160,7 @@ bomb_defused = False  # Track if bomb has been successfully defused
 correct_wire_bool = False
 
 while running:
-    # screen.fill(WHITE)
+    screen.fill(WHITE)
 
     # Outer shell of the bomb
     bomb_outer = pygame.draw.rect(screen, (153, 143, 96), (50, 50, 1266, 668))
@@ -197,30 +215,40 @@ while running:
     detonator_rect = detonator_img.get_rect(center=(WIDTH - 230, 320))
     screen.blit(detonator_img, detonator_rect.topleft)
 
-    # Draw Wonky Wires
+    # Draw Wires as Images
     mouse_on_wire = False
+
     for wire in wires:
-        if not wire["cut"]:
-            pygame.draw.lines(screen, wire["color"], False, wire["points"], 6)
+        wire_x, wire_y = wire["points"][0]  # Get wire position
+
+        # Display the correct wire image based on cut status
+        if wire["cut"]:
+            if wire["id"] == "red":
+                screen.blit(red_wire_cut, (wire_x, wire_y))
+            elif wire["id"] == "blue":
+                screen.blit(blue_wire_cut, (wire_x, wire_y))
+            elif wire["id"] == "green":
+                screen.blit(green_wire_cut, (wire_x, wire_y))
         else:
-            # Draw the cut wire with a gap in the middle
-            mid_idx = len(wire["points"]) // 2
-            pygame.draw.lines(screen, wire["color"], False, wire["points"][:mid_idx], 6)
-            pygame.draw.lines(screen, wire["color"], False, wire["points"][mid_idx + 1:], 6)
+            if wire["id"] == "red":
+                screen.blit(red_wire, (wire_x, wire_y))
+            elif wire["id"] == "blue":
+                screen.blit(blue_wire, (wire_x, wire_y))
+            elif wire["id"] == "green":
+                screen.blit(green_wire, (wire_x, wire_y))
 
-        # Check if mouse is hovering over a wire
+        # Update hitbox for detecting mouse hover and clicks
+        wire_rect = pygame.Rect(wire_x, wire_y, 200, 30)  # Correct size
+
+        # Check if mouse is over the wire
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        for px, py in wire["points"]:
-            if abs(px - mouse_x) < 10 and abs(py - mouse_y) < 10:
-                mouse_on_wire = True
+        if wire_rect.collidepoint(mouse_x, mouse_y):
+            mouse_on_wire = True
 
-    wires_left_terminal = pygame.draw.rect(screen, (0, 0, 0), (90, 175, 10, 155))
-    wires_right_terminal = pygame.draw.rect(screen, (0, 0, 0), (370, 175, 10, 155))
-
-    # Change cursor to scissor if hovering over a wire
+    # Change cursor to scissors if hovering over a wire
     if mouse_on_wire:
         pygame.mouse.set_visible(False)
-        screen.blit(scissor_cursor, (mouse_x, mouse_y))
+        screen.blit(scissor_cursor, (mouse_x - 20, mouse_y - 20))  # Offset to center
     else:
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         pygame.mouse.set_visible(True)
@@ -262,33 +290,51 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
+
             x, y = event.pos
 
-            # Wire Cutting
             for wire in wires:
-                for px, py in wire["points"]:  # Check all points in the wire
-                    if abs(px - x) < 10 and abs(py - y) < 10:  # Click near wire
-                        if not wire["cut"]:  # Only process uncut wires
-                            wire["cut"] = True
-                            print(f"Wire {wire['id']} cut!")
 
+                wire_x, wire_y = wire["points"][0]
 
-                            if first_wire_cut is None:
-                                first_wire_cut = wire["id"]  # Track first wire cut
+                wire_rect = pygame.Rect(wire_x, wire_y, 200, 30)  # Correct hitbox
 
-                            # Check if wrong wire was cut first
-                            if first_wire_cut != game_state.correct_wire:
-                                pygame.mouse.set_visible(True)
-                                screen.fill(RED)
-                                defused_text = big_font.render("BOOM! You cut the wrong wire first!", True, BLACK)
-                                screen.blit(defused_text, (WIDTH // 2 - 470, HEIGHT // 2 - 50))
-                                pygame.display.flip()
-                                pygame.time.delay(3000)  # Pause for 3 seconds
-                                running = False  # End game (Bomb explodes)
-                            correct_wire_bool = True
+                if wire_rect.collidepoint(x, y) and not wire["cut"]:  # Prevents duplicate cutting
 
-                        break
+                    wire["cut"] = True  # Cut the wire
+
+                    print(f"Wire {wire['id']} cut!")
+
+                    # Check if this is the first wire cut
+
+                    if first_wire_cut is None:
+                        first_wire_cut = wire["id"]  # Track the first wire cut
+
+                    # If the first wire cut is WRONG, explode immediately
+
+                    if first_wire_cut != game_state.correct_wire:
+                        pygame.mouse.set_visible(True)
+
+                        screen.fill(RED)
+
+                        defused_text = big_font.render("BOOM! You cut the wrong wire first!", True, BLACK)
+
+                        screen.blit(defused_text, (WIDTH // 2 - 470, HEIGHT // 2 - 50))
+
+                        pygame.display.flip()
+
+                        pygame.time.delay(3000)  # Pause for 3 seconds
+
+                        running = False  # End game (Bomb explodes)
+
+                        break  # Stop checking
+                    # If the correct wire is cut, update game state
+                    correct_wire_bool = True
+                    print("Correct wire cut! Proceeding...")
+
+                    break  # Stop checking other wires after cutting one
 
             # Symbol Keypad Interaction
             for idx, pos in enumerate(symbol_positions):
