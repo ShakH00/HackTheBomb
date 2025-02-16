@@ -30,6 +30,10 @@ GREEN_BRIGHT = (0, 255, 0)
 font = pygame.font.Font(None, 48)
 big_font = pygame.font.Font(None, 80)
 
+# Load scissor cursor image
+scissor_cursor = pygame.image.load("graphics/scissor_cursor.png")
+scissor_cursor = pygame.transform.scale(scissor_cursor, (32, 32))
+
 # Timer
 bomb_timer = 300  # 5-minute countdown
 start_time = time.time()
@@ -122,12 +126,32 @@ while running:
     screen.blit(instruction_text, (50, 100))
 
     # Draw Wonky Wires
+    mouse_on_wire = False
     for wire in wires:
         if not wire["cut"]:
             pygame.draw.lines(screen, wire["color"], False, wire["points"], 6)
+        else:
+            # Draw the cut wire with a gap in the middle
+            mid_idx = len(wire["points"]) // 2
+            pygame.draw.lines(screen, wire["color"], False, wire["points"][:mid_idx], 6)
+            pygame.draw.lines(screen, wire["color"], False, wire["points"][mid_idx + 1:], 6)
+
+        # Check if mouse is hovering over a wire
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        for px, py in wire["points"]:
+            if abs(px - mouse_x) < 10 and abs(py - mouse_y) < 10:
+                mouse_on_wire = True
+
     wires_left_terminal = pygame.draw.rect(screen, (0, 0, 0), (90, 175, 10, 155))
     wires_right_terminal = pygame.draw.rect(screen, (0, 0, 0), (370, 175, 10, 155))
 
+    # Change cursor to scissor if hovering over a wire
+    if mouse_on_wire:
+        pygame.mouse.set_visible(False)
+        screen.blit(scissor_cursor, (mouse_x, mouse_y))
+    else:
+        pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
+        pygame.mouse.set_visible(True)
 
     # Draw Symbol Keypad
     for idx, symbol in enumerate(symbols):
