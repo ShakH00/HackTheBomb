@@ -34,9 +34,13 @@ GREEN_BRIGHT = (0, 255, 0)
 font = pygame.font.Font(None, 48)
 big_font = pygame.font.Font(None, 80)
 
-# Load scissor cursor image
+# Load images
 scissor_cursor = pygame.image.load("graphics/scissor_cursor.png")
 scissor_cursor = pygame.transform.scale(scissor_cursor, (32, 32))
+
+detonator_img = pygame.image.load("graphics/detonate_button.png")
+detonator_img = pygame.transform.scale(detonator_img, (150, 150))
+detonator_img = pygame.transform.scale(detonator_img, (250, 250))
 
 # Load countdown digit images (0-9)
 digit_images = []
@@ -160,10 +164,9 @@ while running:
     instruction_text = font.render(received_message, True, BLACK)
     screen.blit(instruction_text, (50, 100))
 
-    # Draw the "explode" circle button in the top-right corner
-    explode_button = pygame.draw.circle(screen, RED, (WIDTH - 230, 230), 150)
-    explode_text = font.render("DETONATE", True, BLACK)
-    screen.blit(explode_text, (WIDTH - 320, 210))
+    # Detonator button
+    detonator_rect = detonator_img.get_rect(center=(WIDTH - 230, 230))
+    screen.blit(detonator_img, detonator_rect.topleft)
 
     # Draw Wonky Wires
     mouse_on_wire = False
@@ -283,7 +286,7 @@ while running:
                             pressed_symbols = []
 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if explode_button.collidepoint(event.pos):
+                if detonator_rect.collidepoint(event.pos):
                     pygame.mouse.set_visible(True)
                     screen.fill(RED)
                     defused_text = big_font.render("BOOM! You triggered the bomb!", True, WHITE)
