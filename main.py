@@ -2,8 +2,6 @@ import pygame
 from pygame.locals import *
 import sys
 import pygbag
-import player1
-import player2
 
 # Initialize Pygame
 pygame.init()
