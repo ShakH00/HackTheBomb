@@ -145,3 +145,7 @@ The game was built using:
 - Caesar Cipher Encryption
 - Event-Driven Programming
 - Object-Oriented Design
+- 
+
+## Screenshots
+You can view them in the screenshots directory
