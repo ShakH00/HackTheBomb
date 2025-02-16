@@ -45,9 +45,16 @@ background_image = pygame.image.load("graphics/motherboard.jpg")
 # background_image = pygame.transform.scale(background_image, (1266, 668))
 screen.blit(background_image, (0, 0))
 
+# Load bomb background
+bomb_background_image = pygame.image.load("graphics/bomb_background1.jpg")
+bomb_background_image = pygame.transform.scale(bomb_background_image, (1246, 648))
+
 # Load images
 scissor_cursor = pygame.image.load("graphics/scissor_cursor.png")
 scissor_cursor = pygame.transform.scale(scissor_cursor, (40, 40))
+
+screw = pygame.image.load("graphics/screw.png")
+screw = pygame.transform.scale(screw, (20, 20))
 
 detonator_img = pygame.image.load("graphics/detonate_button.png")
 detonator_img = pygame.transform.scale(detonator_img, (250, 250))
@@ -169,7 +176,14 @@ while running:
 
     # Outer shell of the bomb
     bomb_outer = pygame.draw.rect(screen, (153, 143, 96), (50, 50, 1266, 668))
-    bomb_inner = pygame.draw.rect(screen, (115, 107, 72), (60, 60, 1246, 648))
+    # bomb_inner = pygame.draw.rect(screen, (115, 107, 72), (60, 60, 1246, 648))
+    screen.blit(bomb_background_image, (60, 60))
+
+    # Screws
+    screen.blit(screw, (70, 70))
+    screen.blit(screw, (70, 678))
+    screen.blit(screw, (1275, 70))
+    screen.blit(screw, (1275, 678))
 
     # Phone
     screen.blit(phone, (50, 40))
@@ -204,7 +218,8 @@ while running:
         pygame.mouse.set_visible(True)
         screen.fill(RED)
         defused_text = big_font.render("BOOM! You didn't defuse the bomb in time!", True, WHITE)
-        screen.blit(defused_text, (WIDTH // 2 - 550, HEIGHT // 2 - 50))
+        text_rect = defused_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        screen.blit(defused_text, text_rect.topleft)
         pygame.display.flip()
         pygame.time.delay(3000)  # Pause for 3 seconds
         running = False  # End game (Bomb explodes)
@@ -221,8 +236,12 @@ while running:
     screen.blit(instruction_text, (95, 125))
 
     # Detonator button
-    detonator_rect = detonator_img.get_rect(center=(WIDTH - 230, 320))
+    detonator_rect = detonator_img.get_rect(center=(WIDTH - 250, 400))
     screen.blit(detonator_img, detonator_rect.topleft)
+
+    # Rails
+    wires_left_terminal = pygame.draw.rect(screen, (0, 0, 0), (105, 290, 10, 145))
+    wires_right_terminal = pygame.draw.rect(screen, (0, 0, 0), (313, 290, 10, 145))
 
     # Draw Wires as Images
     mouse_on_wire = False
@@ -326,17 +345,12 @@ while running:
 
                     if first_wire_cut != game_state.correct_wire:
                         pygame.mouse.set_visible(True)
-
                         screen.fill(RED)
-
                         defused_text = big_font.render("BOOM! You cut the wrong wire first!", True, BLACK)
-
-                        screen.blit(defused_text, (WIDTH // 2 - 470, HEIGHT // 2 - 50))
-
+                        text_rect = defused_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+                        screen.blit(defused_text, text_rect.topleft)
                         pygame.display.flip()
-
                         pygame.time.delay(3000)  # Pause for 3 seconds
-
                         running = False  # End game (Bomb explodes)
 
                         break  # Stop checking
@@ -368,7 +382,8 @@ while running:
                     pygame.mouse.set_visible(True)
                     screen.fill(RED)
                     defused_text = big_font.render("BOOM! You triggered the bomb!", True, WHITE)
-                    screen.blit(defused_text, (WIDTH // 2 - 350, HEIGHT // 2 - 50))
+                    text_rect = defused_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+                    screen.blit(defused_text, text_rect.topleft)
                     pygame.display.flip()
                     pygame.time.delay(3000)  # Pause for 3 seconds
                     running = False  # End game (Bomb explodes)
@@ -388,11 +403,12 @@ while running:
                         pygame.mouse.set_visible(True)
                         screen.fill(RED)
                         defused_text = big_font.render("BOOM! You put the wrong code!", True, BLACK)
-                        screen.blit(defused_text, (WIDTH // 2 - 450, HEIGHT // 2 - 50))
+                        text_rect = defused_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+                        screen.blit(defused_text, text_rect.topleft)
                         pygame.display.flip()
                         pygame.time.delay(3000)  # Pause for 3 seconds
                         running = False  # End game (Bomb explodes)
-                    player_input_code = ""
+                        player_input_code = ""
 
         elif event.type == pygame.KEYDOWN and input_active:
             if input_active:
@@ -418,7 +434,8 @@ while running:
         pygame.mouse.set_visible(True)
         screen.fill(GREEN_BRIGHT)
         defused_text = big_font.render("CONGRATULATIONS!! BOMB DEFUSED!", True, BLACK)
-        screen.blit(defused_text, (WIDTH // 2 - 500, HEIGHT // 2 - 50))
+        text_rect = defused_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        screen.blit(defused_text, text_rect.topleft)
         pygame.display.flip()
         pygame.time.delay(3000)  # Pause for 3 seconds
         running = False  # End game
